@@ -21,7 +21,3 @@ java -cp softcomp-ga/target/softcomp-ga-0.1.0-SNAPSHOT.jar com.softcomp.ga.App
 - `softcomp-fuzzy` – Fuzzy Logic
 - `softcomp-nn` – Neural Networks
 - `softcomp-examples` – Example applications
-
----
-
-Author: **Mohab-Sobhy**
