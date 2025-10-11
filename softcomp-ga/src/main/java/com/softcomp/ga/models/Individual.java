@@ -1,0 +1,57 @@
+package com.softcomp.ga.models;
+
+public class Individual<T> {
+
+    private Chromosome<T> chromosome;
+    private double fitness;
+    private boolean feasible;
+    private int generationCreated;
+
+    public Individual(Chromosome<T> chromosome) {
+        this.chromosome = chromosome;
+        this.fitness = 0.0;
+        this.feasible = true;
+        this.generationCreated = 0;
+    }
+
+    public Chromosome<T> getChromosome() {
+        return chromosome;
+    }
+
+    public void setChromosome(Chromosome<T> chromosome) {
+        this.chromosome = chromosome;
+    }
+
+    public double getFitness() {
+        return fitness;
+    }
+
+    public void setFitness(double fitness) {
+        this.fitness = fitness;
+    }
+
+    public boolean isFeasible() {
+        return feasible;
+    }
+
+    public void setFeasible(boolean feasible) {
+        this.feasible = feasible;
+    }
+
+    public int getGenerationCreated() {
+        return generationCreated;
+    }
+
+    public void setGenerationCreated(int generationCreated) {
+        this.generationCreated = generationCreated;
+    }
+
+    @Override
+    public String toString() {
+        return String.format(
+                "Individual{chromosome=%s, fitness=%.4f, feasible=%b, generation=%d}",
+                chromosome.toString(), fitness, feasible, generationCreated
+        );
+    }
+
+}

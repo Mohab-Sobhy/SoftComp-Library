@@ -14,5 +14,12 @@
 
     <dependencies>
         <!-- Add module-specific dependencies here -->
+
+        <dependency>
+            <groupId>com.softcomp</groupId>
+            <artifactId>softcomp-ga</artifactId>
+            <version>0.1.0-SNAPSHOT</version>
+        </dependency>
+
     </dependencies>
 </project>
