@@ -1,4 +1,16 @@
 package com.softcomp.ga.replacement;
 
-public class ElitismReplacement implements IReplacement {
+import com.softcomp.ga.models.Population;
+import java.util.List;
+
+public class ElitismReplacement<T> implements IReplacement<T> {
+
+    @Override
+    public Population<T> replace(Population<T> oldPopulation, Population<T> offspringPopulation) {
+
+        // implementation
+
+        return null;
+    }
+
 }

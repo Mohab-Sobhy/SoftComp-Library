@@ -1,4 +1,16 @@
 package com.softcomp.ga.selection;
 
-public class TournamentSelection implements ISelection {
+import com.softcomp.ga.models.Chromosome;
+import com.softcomp.ga.models.Population;
+
+public class TournamentSelection<T> implements ISelection<T> {
+
+    @Override
+    public Chromosome<T> select(Population<T> population){
+
+        // implementation
+
+        return null;
+    }
+
 }

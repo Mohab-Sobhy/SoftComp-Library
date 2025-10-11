@@ -1,4 +1,15 @@
 package com.softcomp.ga.replacement;
 
-public class GenerationalReplacement implements IReplacement {
+import com.softcomp.ga.models.Population;
+
+public class GenerationalReplacement<T> implements IReplacement<T> {
+
+    @Override
+    public Population<T> replace(Population<T> oldPopulation, Population<T> offspringPopulation) {
+
+        // implementation
+
+        return null;
+    }
+
 }
