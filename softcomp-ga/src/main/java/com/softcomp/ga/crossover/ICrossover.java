@@ -1,6 +1,5 @@
 package com.softcomp.ga.crossover;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.softcomp.ga.models.Chromosome;

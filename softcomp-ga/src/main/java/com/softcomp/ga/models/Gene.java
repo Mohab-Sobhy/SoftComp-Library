@@ -17,10 +17,21 @@ public class Gene<T> {
         this.value = gene;
     }
 
-    public double getLowerBound() {return lowerBound;}
-    public void setLowerBound(double LB) {lowerBound = LB;}
-    public double getUpperBound() {return upperBound;}
-    public void setUpperBound(double UB) {upperBound = UB;}
+    public double getLowerBound() {
+        return lowerBound;
+    }
+
+    public void setLowerBound(double LB) {
+        lowerBound = LB;
+    }
+
+    public double getUpperBound() {
+        return upperBound;
+    }
+
+    public void setUpperBound(double UB) {
+        upperBound = UB;
+    }
 
     @Override
     public String toString() {
