@@ -5,10 +5,7 @@ import java.util.Random;
 import com.softcomp.ga.models.Chromosome;
 import com.softcomp.ga.models.Gene;
 
-// FOR Permutation Chromosomes (our case study will use it)
-
-public class SwapMutation<T> implements IMutation<T> {
-
+public class InsertMutation<T> implements IMutation<T> {
     @Override
     public Chromosome<T> mutate(Chromosome<T> chromosome, double mutationRate){
 
@@ -16,14 +13,14 @@ public class SwapMutation<T> implements IMutation<T> {
         {
             int size = chromosome.getGenes().size();
             Random random = new Random();
-
+            
             int i = random.nextInt(size);
             int j = random.nextInt(size);
             while(j == i) j = random.nextInt(size);
 
-            Gene<T> temp = chromosome.getGenes().get(i);
-            chromosome.getGenes().set(i, chromosome.getGenes().get(j));
-            chromosome.getGenes().set(j, temp);
+            Gene<T> gene = chromosome.getGenes().get(i);
+            chromosome.getGenes().remove(i);
+            chromosome.getGenes().add(j, gene);
         }
 
         return chromosome;
