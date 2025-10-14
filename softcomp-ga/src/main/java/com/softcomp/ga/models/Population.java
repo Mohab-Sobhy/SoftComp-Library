@@ -12,4 +12,13 @@ public class Population<T> {
     public int getPopulationSize() {
         return individuals.size();
     }
+
+     public List<Individual<T>> getIndividuals() {
+        return individuals;
+    }
+
+    public void setIndividuals(List<Individual<T>> individuals) {
+        this.individuals = individuals;
+    }
+
 }

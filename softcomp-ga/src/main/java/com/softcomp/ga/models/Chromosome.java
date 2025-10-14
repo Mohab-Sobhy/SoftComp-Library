@@ -3,7 +3,7 @@ package com.softcomp.ga.models;
 import java.util.List;
 
 public class Chromosome<T> {
-    private List< Gene<T> > genes;
+    private List<Gene<T>> genes;
 
     public Chromosome(List<Gene<T>> genes) {
         this.genes = genes;

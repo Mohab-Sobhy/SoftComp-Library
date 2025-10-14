@@ -6,6 +6,8 @@ public class Individual<T> {
     private double fitness;
     private boolean feasible;
     private int generationCreated;
+    private String id;
+    private String parentId = null;
 
     public Individual(Chromosome<T> chromosome) {
         this.chromosome = chromosome;
@@ -45,6 +47,23 @@ public class Individual<T> {
     public void setGenerationCreated(int generationCreated) {
         this.generationCreated = generationCreated;
     }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(String parentId) {
+        this.parentId = parentId;
+    }
+
 
     @Override
     public String toString() {
