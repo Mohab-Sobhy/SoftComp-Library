@@ -10,7 +10,7 @@ public class Node {
 
     public Node(int id) {
         this.id = id;
-        this.color = -1; // غير ملوّن مبدئيًا
+        this.color = -1; // No Color Initially
         this.neighbors = new ArrayList<>();
     }
 

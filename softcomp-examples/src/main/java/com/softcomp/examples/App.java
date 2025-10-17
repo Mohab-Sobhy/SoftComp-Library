@@ -26,7 +26,6 @@ public class App {
             colorOptions.add(i);
         }
 
-        // إعداد الـ GA config
         GAConfig<Integer> gaConfig = new GAConfig<>(
                 100,
                 200,
