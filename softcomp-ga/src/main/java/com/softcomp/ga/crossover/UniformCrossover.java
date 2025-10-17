@@ -12,8 +12,8 @@ public class UniformCrossover<T> implements ICrossover<T> {
     protected Random random = new Random();
     public Double rate;
 
-    public UniformCrossover(double rate) {
-        this.rate = rate;
+    public UniformCrossover(double crossoverRate) {
+        this.rate = crossoverRate;
     }
 
     public List<Gene<T>> CrossGenes(List<Gene<T>> g1, List<Gene<T>> g2, List<Boolean> flips) {

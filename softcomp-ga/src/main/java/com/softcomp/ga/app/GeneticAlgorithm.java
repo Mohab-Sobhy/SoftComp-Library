@@ -13,12 +13,8 @@ public class GeneticAlgorithm<T> {
         this.config = config;
     }
 
-    public void initializePopulation() {
 
-    }
-
-    public void run() {
-        initializePopulation();
+    public void run(Population<T> population) {
 
         // selection
         // crossover

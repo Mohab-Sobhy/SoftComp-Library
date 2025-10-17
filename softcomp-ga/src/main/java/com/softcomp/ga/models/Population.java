@@ -1,9 +1,10 @@
 package com.softcomp.ga.models;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Population<T> {
-    private List<Individual<T>> individuals;
+    private List<Individual<T>> individuals = new ArrayList<>();
 
     public Individual<T> getIndividualOfIndex(int index) {
         return individuals.get(index);
@@ -19,6 +20,10 @@ public class Population<T> {
 
     public void setIndividuals(List<Individual<T>> individuals) {
         this.individuals = individuals;
+    }
+
+    public void addIndividual(Individual<T> individual) {
+        individuals.add(individual);
     }
 
 }
