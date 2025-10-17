@@ -6,8 +6,15 @@ import com.softcomp.ga.models.Chromosome;
 import com.softcomp.ga.models.Gene;
 
 public class InsertMutation<T> implements IMutation<T> {
+
+    private double mutationRate;
+
+    public InsertMutation(double mutationRate) {
+        this.mutationRate = mutationRate;
+    }
+
     @Override
-    public Chromosome<T> mutate(Chromosome<T> chromosome, double mutationRate){
+    public Chromosome<T> mutate(Chromosome<T> chromosome){
 
         if(checkRate(mutationRate))
         {

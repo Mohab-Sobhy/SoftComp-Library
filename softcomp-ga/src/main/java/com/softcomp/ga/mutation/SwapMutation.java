@@ -9,8 +9,14 @@ import com.softcomp.ga.models.Gene;
 
 public class SwapMutation<T> implements IMutation<T> {
 
+    private double mutationRate;
+
+    public SwapMutation(double mutationRate) {
+        this.mutationRate = mutationRate;
+    }
+
     @Override
-    public Chromosome<T> mutate(Chromosome<T> chromosome, double mutationRate){
+    public Chromosome<T> mutate(Chromosome<T> chromosome){
 
         if(checkRate(mutationRate))
         {

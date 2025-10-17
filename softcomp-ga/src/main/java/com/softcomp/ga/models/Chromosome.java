@@ -17,6 +17,10 @@ public class Chromosome<T> {
         this.genes = genes;
     }
 
+    public void addGene(Gene<T> gene) {
+        genes.add(gene);
+    }
+
     @Override
     public String toString() {
         return genes.toString();

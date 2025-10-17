@@ -7,8 +7,14 @@ import com.softcomp.ga.models.Gene;
 
 public class UniformMutation implements IMutation<Double>{
 
+    private double mutationRate;
+
+    public UniformMutation(double mutationRate) {
+        this.mutationRate = mutationRate;
+    }
+
     @Override
-    public Chromosome<Double> mutate(Chromosome<Double> chromosome, double mutationRate){
+    public Chromosome<Double> mutate(Chromosome<Double> chromosome){
 
         if(checkRate(mutationRate))
         {
