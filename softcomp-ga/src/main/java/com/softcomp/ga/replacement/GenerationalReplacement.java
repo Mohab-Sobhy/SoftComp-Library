@@ -7,8 +7,9 @@ public class GenerationalReplacement<T> implements IReplacement<T> {
     @Override
     public Population<T> replace(Population<T> oldPopulation, Population<T> offspringPopulation) {
 
+        // implementation
         return offspringPopulation;
-        
+
     }
 
 }

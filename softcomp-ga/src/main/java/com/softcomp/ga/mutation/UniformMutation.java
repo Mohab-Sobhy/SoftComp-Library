@@ -7,16 +7,16 @@ import com.softcomp.ga.models.Gene;
 
 public class UniformMutation implements IMutation<Double>{
 
-    private double mutationRate;
+    private double rate;
 
     public UniformMutation(double mutationRate) {
-        this.mutationRate = mutationRate;
+        this.rate = mutationRate;
     }
 
     @Override
     public Chromosome<Double> mutate(Chromosome<Double> chromosome){
 
-        if(checkRate(mutationRate))
+        if(checkRate(rate))
         {
             for(int i = 0; i<chromosome.getGenes().size(); i++)
             {
@@ -49,5 +49,15 @@ public class UniformMutation implements IMutation<Double>{
     public boolean checkRate(double mutationRate)
     {
         return true;
+    }
+
+    @Override
+    public double getRate(){
+        return rate;
+    }
+
+    @Override
+    public void setRate(double rate){
+        this.rate = rate;
     }
 }

@@ -8,12 +8,12 @@ import com.softcomp.ga.models.Gene;
 
 public class OptionsFlipMutation<T> implements IMutation<T> {
 
-    private final double mutationRate;
+    private double rate;
     private final List<T> flipOptions;
     private final Random random = new Random();
 
     public OptionsFlipMutation(double mutationRate, List<T> flipOptions) {
-        this.mutationRate = mutationRate;
+        this.rate = mutationRate;
         this.flipOptions = flipOptions;
     }
 
@@ -21,7 +21,7 @@ public class OptionsFlipMutation<T> implements IMutation<T> {
     public Chromosome<T> mutate(Chromosome<T> chromosome) {
 
         for (int i = 0; i < chromosome.getGenes().size(); i++) {
-            if (checkRate(mutationRate)) {
+            if (checkRate(rate)) {
                 Gene<T> gene = chromosome.getGenes().get(i);
                 T currentValue = gene.get();
 
@@ -48,5 +48,15 @@ public class OptionsFlipMutation<T> implements IMutation<T> {
     @Override
     public boolean checkRate(double mutationRate) {
         return random.nextDouble() < mutationRate;
+    }
+
+    @Override
+    public double getRate(){
+        return rate;
+    }
+
+    @Override
+    public void setRate(double rate){
+        this.rate = rate;
     }
 }

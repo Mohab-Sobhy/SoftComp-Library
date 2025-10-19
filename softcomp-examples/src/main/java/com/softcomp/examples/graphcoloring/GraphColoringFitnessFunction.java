@@ -6,7 +6,7 @@ import com.softcomp.ga.models.Chromosome;
 import java.util.List;
 
 public class GraphColoringFitnessFunction implements IFitnessFunction<Integer> {
-    Graph graph;
+    private final Graph graph;
 
     public GraphColoringFitnessFunction(Graph graph) {
         this.graph = graph;
@@ -15,12 +15,15 @@ public class GraphColoringFitnessFunction implements IFitnessFunction<Integer> {
     @Override
     public double evaluate(Chromosome<Integer> chromosome) {
         int conflicts = 0;
+        int totalEdges = 0;
 
         for (int i = 0; i < graph.getNumberOfVertices(); i++) {
             List<Integer> neighbors = graph.getNeighbors(i);
 
             for (int neighbor : neighbors) {
-                if (neighbor > i) { // (neighbor > i) to prevent duplicates
+                if (neighbor > i) { // to prevent duplications
+                    totalEdges++;
+
                     int color1 = chromosome.getGenes().get(i).get();
                     int color2 = chromosome.getGenes().get(neighbor).get();
 
@@ -31,11 +34,14 @@ public class GraphColoringFitnessFunction implements IFitnessFunction<Integer> {
             }
         }
 
-        double colorPenalty = graph.getNumColors() - 1;
-        double conflictPenalty = conflicts * (graph.getNumberOfVertices() + 1);
-        double score = conflictPenalty + colorPenalty;
-        double fitness = 1.0 / (1.0 + score);
+        double fitness;
 
-        return fitness;
+        if (totalEdges == 0) {
+            fitness = 1.0;
+        } else {
+            fitness = 1.0 - ((double) conflicts / totalEdges);
+        }
+
+        return Math.max(0, Math.min(1, fitness));
     }
 }

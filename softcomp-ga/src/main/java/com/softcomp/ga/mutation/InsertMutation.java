@@ -7,16 +7,16 @@ import com.softcomp.ga.models.Gene;
 
 public class InsertMutation<T> implements IMutation<T> {
 
-    private double mutationRate;
+    private double rate;
 
     public InsertMutation(double mutationRate) {
-        this.mutationRate = mutationRate;
+        this.rate = mutationRate;
     }
 
     @Override
     public Chromosome<T> mutate(Chromosome<T> chromosome){
 
-        if(checkRate(mutationRate))
+        if(checkRate(rate))
         {
             int size = chromosome.getGenes().size();
             Random random = new Random();
@@ -40,5 +40,15 @@ public class InsertMutation<T> implements IMutation<T> {
         Random random = new Random();
         if(random.nextDouble() < mutationRate) return true;
         return false;
+    }
+
+    @Override
+    public double getRate(){
+        return rate;
+    }
+
+    @Override
+    public void setRate(double rate){
+        this.rate = rate;
     }
 }

@@ -58,4 +58,30 @@ public class Graph {
     public List<Node> getNodes() {
         return nodes;
     }
+
+    public String getGraphStructure() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("=== Graph Structure ===\n");
+
+        for (Node node : nodes) {
+            sb.append("Node ").append(node.getId())
+                    .append(" (Color: ").append(node.getColor()).append(") -> ");
+
+            List<Node> neighbors = node.getNeighbors();
+            if (neighbors.isEmpty()) {
+                sb.append("No neighbors\n");
+            } else {
+                for (int i = 0; i < neighbors.size(); i++) {
+                    sb.append(neighbors.get(i).getId());
+                    if (i < neighbors.size() - 1) {
+                        sb.append(", ");
+                    }
+                }
+                sb.append("\n");
+            }
+        }
+
+        return sb.toString();
+    }
+
 }

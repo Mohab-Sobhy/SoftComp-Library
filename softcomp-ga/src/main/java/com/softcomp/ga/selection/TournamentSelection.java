@@ -1,44 +1,39 @@
 package com.softcomp.ga.selection;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 import com.softcomp.ga.models.Chromosome;
 import com.softcomp.ga.models.Individual;
 import com.softcomp.ga.models.Population;
 
+import java.util.Random;
+
 public class TournamentSelection<T> implements ISelection<T> {
 
-    private int tournamentSize;
-    private Random random = new Random();
+    private final int tournamentSize;
+    private final Random random;
 
     public TournamentSelection(int tournamentSize) {
         this.tournamentSize = tournamentSize;
+        this.random = new Random();
     }
 
     @Override
     public Chromosome<T> select(Population<T> population) {
-        int populationSize = population.getPopulationSize();
-        if (populationSize == 0) {
-            return null; // just in case empty population
+        if (population == null || population.getIndividuals().isEmpty()) {
+            throw new IllegalArgumentException("Population cannot be null or empty.");
         }
 
-        List<Individual<T>> participants = new ArrayList<>();
+        Individual<T> best = null;
 
+        // Pick random individuals and select the best one
         for (int i = 0; i < tournamentSize; i++) {
-            int randomIndex = random.nextInt(populationSize);
-            participants.add(population.getIndividualOfIndex(randomIndex));
-        }
+            int randomIndex = random.nextInt(population.getIndividuals().size());
+            Individual<T> candidate = population.getIndividuals().get(randomIndex);
 
-        Individual<T> winner = participants.get(0);
-
-        for (int i = 1; i < tournamentSize; i++) {
-            if (participants.get(i).getFitness() > winner.getFitness()) {
-                winner = participants.get(i);
+            if (best == null || candidate.getFitness() > best.getFitness()) {
+                best = candidate;
             }
         }
 
-        return winner.getChromosome();
+        return best.getChromosome();
     }
-
 }

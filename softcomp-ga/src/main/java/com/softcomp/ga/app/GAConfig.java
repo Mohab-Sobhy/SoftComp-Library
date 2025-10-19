@@ -12,7 +12,6 @@ public class GAConfig<T> {
     // Core parameters
     private int populationSize = 50;
     private int numGenerations = 100;
-    private double crossoverRate = 0.7;
     private double mutationRate = 0.05;
 
     // Strategy objects
@@ -27,8 +26,8 @@ public class GAConfig<T> {
 
     public GAConfig() {}
 
-    public GAConfig(int populationSize, int numGenerations,
-                    double crossoverRate, double mutationRate,
+    public GAConfig(int populationSize,
+                    int numGenerations,
                     ISelection<T> selectionStrategy,
                     ICrossover<T> crossoverStrategy,
                     IMutation<T> mutationStrategy,
@@ -38,7 +37,6 @@ public class GAConfig<T> {
 
         this.populationSize = populationSize;
         this.numGenerations = numGenerations;
-        this.crossoverRate = crossoverRate;
         this.mutationRate = mutationRate;
         this.selectionStrategy = selectionStrategy;
         this.crossoverStrategy = crossoverStrategy;
@@ -54,8 +52,8 @@ public class GAConfig<T> {
     public int getNumGenerations() { return numGenerations; }
     public void setNumGenerations(int numGenerations) { this.numGenerations = numGenerations; }
 
-    public double getCrossoverRate() { return crossoverRate; }
-    public void setCrossoverRate(double crossoverRate) { this.crossoverRate = crossoverRate; }
+    public double getCrossoverRate() { return crossoverStrategy.getRate(); }
+    public void setCrossoverRate(double crossoverRate) { crossoverStrategy.setRate(crossoverRate); }
 
     public double getMutationRate() { return mutationRate; }
     public void setMutationRate(double mutationRate) { this.mutationRate = mutationRate; }
@@ -83,7 +81,7 @@ public class GAConfig<T> {
         return "GAConfig {" +
                 "populationSize=" + populationSize +
                 ", numGenerations=" + numGenerations +
-                ", crossoverRate=" + crossoverRate +
+                ", crossoverRate=" + crossoverStrategy.getRate() +
                 ", mutationRate=" + mutationRate +
                 ", selection=" + (selectionStrategy != null ? selectionStrategy.getClass().getSimpleName() : "null") +
                 ", crossover=" + (crossoverStrategy != null ? crossoverStrategy.getClass().getSimpleName() : "null") +

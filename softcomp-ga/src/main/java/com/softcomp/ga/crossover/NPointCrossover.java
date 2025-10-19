@@ -68,6 +68,16 @@ public class NPointCrossover<T> implements ICrossover<T> {
         return results;
     }
 
+    @Override
+    public double getRate(){
+        return rate;
+    }
+
+    @Override
+    public void setRate(double rate){
+        this.rate = rate;
+    }
+
     public List<Chromosome<T>> crossover(Chromosome<T> parent1, Chromosome<T> parent2, List<Integer> points) {
         List<Gene<T>> g1 = parent1.getGenes();
         List<Gene<T>> g2 = parent2.getGenes();

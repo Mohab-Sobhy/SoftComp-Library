@@ -48,4 +48,14 @@ public class UniformCrossover<T> implements ICrossover<T> {
         }
         return results;
     }
+
+    @Override
+    public double getRate(){
+        return rate;
+    }
+
+    @Override
+    public void setRate(double rate){
+        this.rate = rate;
+    }
 }

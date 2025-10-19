@@ -1,24 +1,30 @@
 package com.softcomp.examples;
 
 import com.softcomp.examples.graphcoloring.*;
+import com.softcomp.ga.LoggerService;
 import com.softcomp.ga.app.GAConfig;
 import com.softcomp.ga.crossover.UniformCrossover;
 import com.softcomp.ga.mutation.OptionsFlipMutation;
 import com.softcomp.ga.replacement.ElitismReplacement;
+import com.softcomp.ga.replacement.RandomReplacement;
 import com.softcomp.ga.selection.TournamentSelection;
 
+import java.awt.Desktop;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class App {
     public static void main(String[] args) {
-        System.out.println("Hello from softcomp-examples module!");
+        System.out.println("softcomp-examples module started!");
 
         RandomGraphGenerator graphGenerator = RandomGraphGenerator.getInstance();
         RandomIndividualGenerator individualGenerator = RandomIndividualGenerator.getInstance();
+        LoggerService loggerService = LoggerService.getInstance();
 
-        int numOfNodes = 10;
-        double edgeProbability = 0.35;
+        int numOfNodes = 4;
+        double edgeProbability = 1;
         int numOfColors = 4;
         List<Integer> colorOptions = new ArrayList<>();
 
@@ -27,27 +33,47 @@ public class App {
         }
 
         GAConfig<Integer> gaConfig = new GAConfig<>(
-                100,
-                200,
-                0.8,
-                0.2,
-                new TournamentSelection<>(),
-                new UniformCrossover<>(0.8),
-                new OptionsFlipMutation<>(0.05, colorOptions),
+                2,
+                1000,
+                new TournamentSelection<>(3),
+                new UniformCrossover<>(0.9),
+                new OptionsFlipMutation<>(0.1, colorOptions),
                 new ElitismReplacement<>(),
-                null, //during runtime
-                null
+                null, // fitnessFunction (set during runtime)
+                null // no need for feasibility function
         );
 
         GraphColoringApp app = new GraphColoringApp(
                 gaConfig,
                 graphGenerator,
                 individualGenerator,
+                loggerService,
                 numOfNodes,
                 edgeProbability,
                 numOfColors
         );
 
         app.run();
+
+        openVisualizer("visualizer.html");
+    }
+
+    private static void openVisualizer(String filePath) {
+        try {
+            File htmlFile = new File(filePath);
+            if (!htmlFile.exists()) {
+                System.err.println("❌ visualizer.html not found at: " + filePath);
+                return;
+            }
+
+            if (Desktop.isDesktopSupported()) {
+                Desktop.getDesktop().browse(htmlFile.toURI());
+                System.out.println("Opened visualizer in default browser.");
+            } else {
+                System.err.println("Desktop browsing not supported on this platform.");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

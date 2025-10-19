@@ -34,6 +34,16 @@ public class OrderCrossover<T> implements ICrossover<T> {
     }
 
     @Override
+    public double getRate(){
+        return rate;
+    }
+
+    @Override
+    public void setRate(double rate){
+        this.rate = rate;
+    }
+
+    @Override
     public List<Chromosome<T>> crossover(Chromosome<T> parent1, Chromosome<T> parent2) {
 
         List<Gene<T>> g1 = parent1.getGenes();

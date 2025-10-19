@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Graph Coloring Visualizer</title>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<style>
+  body {
+    font-family: 'Inter', sans-serif;
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+    color: white;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+  }
+  header {
+    text-align: center;
+    padding: 1rem;
+    font-size: 1.5rem;
+    font-weight: bold;
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+  }
+  #container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem;
+  }
+  #graph {
+    width: 90vw;
+    height: 70vh;
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    background: rgba(255,255,255,0.03);
+  }
+  #chromosome {
+    margin-top: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .gene {
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    margin: 3px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    transition: transform 0.3s;
+  }
+  .gene:hover {
+    transform: scale(1.2);
+  }
+  #controls {
+    margin-top: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    align-items: center;
+  }
+  button {
+    background: #334155;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  button:hover {
+    background: #475569;
+  }
+  #speedControl {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  input[type="range"] {
+    width: 200px;
+  }
+  #status {
+    margin-top: 1rem;
+    font-size: 1rem;
+    opacity: 0.8;
+  }
+</style>
+</head>
+<body>
+<header>🧬 Graph Coloring Visualizer</header>
+
+<div id="container">
+  <div id="graph"></div>
+  <div id="chromosome"></div>
+
+  <div id="controls">
+    <button id="prev">⏮ Prev</button>
+    <button id="play">▶️ Play</button>
+    <button id="pause" disabled>⏸ Pause</button>
+    <button id="next">⏭ Next</button>
+    <button id="reset">🔄 Reset</button>
+
+    <!-- ⚡ سرعة التشغيل -->
+    <div id="speedControl">
+      <label for="speed">⚡ Speed:</label>
+      <input id="speed" type="range" min="0.1" max="10" step="0.1" value="1">
+      <span id="speedValue">1x</span>
+    </div>
+  </div>
+
+  <div id="status">Loading GARun.log...</div>
+</div>
+
+<script>
+const COLOR_MAP = {
+  "-1": "#9CA3AF", "0": "#ef4444", "1": "#f59e0b", "2": "#10b981", "3": "#3b82f6",
+  "4": "#8b5cf6", "5": "#ec4899", "6": "#14b8a6", "7": "#eab308", "8": "#22d3ee",
+  "9": "#a16207", "10": "#84cc16", "11": "#d946ef", "12": "#0ea5e9", "13": "#f97316",
+  "14": "#16a34a", "15": "#2563eb", "16": "#9333ea", "17": "#db2777", "18": "#059669", "19": "#ea580c"
+};
+
+let graph = { nodes: [], links: [] };
+let generations = [];
+let currentGen = 0;
+let playInterval = null;
+let speedMultiplier = 1;
+
+// Load GARun.log automatically
+fetch('GARun.log')
+  .then(res => {
+    if (!res.ok) throw new Error("File not found");
+    return res.text();
+  })
+  .then(text => {
+    document.getElementById('status').textContent = "GARun.log loaded successfully ✅";
+    parseLog(text);
+    renderGraph();
+    updateGraphColors(0);
+  })
+  .catch(err => {
+    document.getElementById('status').textContent = "❌ Error loading GARun.log: " + err.message;
+  });
+
+function parseLog(logText) {
+  const lines = logText.split('\n').map(l => l.trim()).filter(l => l);
+  graph.nodes = [];
+  graph.links = [];
+  generations = [];
+
+  for (let line of lines) {
+    if (line.startsWith("Node")) {
+      const match = line.match(/Node (\d+) \(Color: (-?\d+)\) -> (.*)/);
+      if (match) {
+        const nodeId = parseInt(match[1]);
+        const color = parseInt(match[2]);
+        const neighbors = match[3].includes("No neighbors") ? [] :
+          match[3].split(',').map(x => parseInt(x.trim()));
+        graph.nodes.push({ id: nodeId, color: color });
+        neighbors.forEach(n => graph.links.push({ source: nodeId, target: n }));
+      }
+    }
+    if (line.startsWith("Best solution:")) {
+      const match = line.match(/\[(.*?)\].*Fitness\s*=\s*([\d.]+)/);
+      if (match) {
+        const colors = match[1].split(',').map(x => parseInt(x.trim()));
+        const fitness = parseFloat(match[2]);
+        generations.push({ colors, fitness });
+      }
+    }
+  }
+}
+
+function renderGraph() {
+  const width = document.getElementById('graph').clientWidth;
+  const height = document.getElementById('graph').clientHeight;
+  const svg = d3.select("#graph").append("svg")
+    .attr("width", width)
+    .attr("height", height);
+
+  const svgGroup = svg.append("g");
+
+  svg.call(d3.zoom()
+    .scaleExtent([0.2, 3])
+    .on("zoom", (event) => svgGroup.attr("transform", event.transform)));
+
+  const nodes = graph.nodes;
+  const links = graph.links;
+
+  const simulation = d3.forceSimulation(nodes)
+    .force("link", d3.forceLink(links).id(d => d.id).distance(120).strength(0.3))
+    .force("charge", d3.forceManyBody().strength(-400))
+    .force("center", d3.forceCenter(width / 2, height / 2))
+    .force("collision", d3.forceCollide().radius(35))
+    .on("tick", ticked);
+
+  const link = svgGroup.append("g")
+    .attr("stroke", "#999")
+    .attr("stroke-opacity", 0.6)
+    .selectAll("line")
+    .data(links)
+    .enter().append("line")
+    .attr("stroke-width", 1.5);
+
+  const node = svgGroup.append("g")
+    .selectAll("circle")
+    .data(nodes)
+    .enter().append("circle")
+    .attr("r", 18)
+    .attr("fill", d => COLOR_MAP[d.color])
+    .call(drag(simulation));
+
+  const label = svgGroup.append("g")
+    .selectAll("text")
+    .data(nodes)
+    .enter().append("text")
+    .text(d => d.id)
+    .attr("font-size", 13)
+    .attr("text-anchor", "middle")
+    .attr("dy", 4)
+    .attr("fill", "#fff");
+
+  function ticked() {
+    link
+      .attr("x1", d => d.source.x)
+      .attr("y1", d => d.source.y)
+      .attr("x2", d => d.target.x)
+      .attr("y2", d => d.target.y);
+    node
+      .attr("cx", d => d.x)
+      .attr("cy", d => d.y);
+    label
+      .attr("x", d => d.x)
+      .attr("y", d => d.y);
+  }
+
+  window.updateGraphColors = (genIndex) => {
+    if (!generations[genIndex]) return;
+    const { colors, fitness } = generations[genIndex];
+    nodes.forEach((n, i) => n.color = colors[i]);
+    node.transition().duration(700)
+      .attr("fill", d => COLOR_MAP[d.color]);
+    updateChromosome(colors);
+    document.getElementById('status').textContent =
+      `Generation ${genIndex + 1}/${generations.length} | Fitness = ${fitness.toFixed(3)}`;
+  };
+}
+
+function drag(simulation) {
+  function dragstarted(event, d) {
+    if (!event.active) simulation.alphaTarget(0.3).restart();
+    d.fx = d.x;
+    d.fy = d.y;
+  }
+  function dragged(event, d) {
+    d.fx = event.x;
+    d.fy = event.y;
+  }
+  function dragended(event, d) {
+    if (!event.active) simulation.alphaTarget(0);
+    d.fx = null;
+    d.fy = null;
+  }
+  return d3.drag().on("start", dragstarted).on("drag", dragged).on("end", dragended);
+}
+
+function updateChromosome(colors) {
+  const container = document.getElementById('chromosome');
+  container.innerHTML = '';
+  colors.forEach(c => {
+    const div = document.createElement('div');
+    div.className = 'gene';
+    div.style.background = COLOR_MAP[c];
+    container.appendChild(div);
+  });
+}
+
+// Controls
+document.getElementById('next').onclick = () => {
+  currentGen = Math.min(currentGen + 1, generations.length - 1);
+  updateGraphColors(currentGen);
+};
+document.getElementById('prev').onclick = () => {
+  currentGen = Math.max(currentGen - 1, 0);
+  updateGraphColors(currentGen);
+};
+document.getElementById('reset').onclick = () => {
+  currentGen = 0;
+  updateGraphColors(0);
+};
+document.getElementById('play').onclick = () => {
+  document.getElementById('play').disabled = true;
+  document.getElementById('pause').disabled = false;
+  startPlayLoop();
+};
+document.getElementById('pause').onclick = () => {
+  clearInterval(playInterval);
+  document.getElementById('play').disabled = false;
+  document.getElementById('pause').disabled = true;
+};
+
+// ⚙️ التحكم في السرعة (لحد ×10)
+document.getElementById('speed').oninput = (e) => {
+  speedMultiplier = parseFloat(e.target.value);
+  document.getElementById('speedValue').textContent = speedMultiplier.toFixed(1) + "x";
+  if (playInterval) {
+    clearInterval(playInterval);
+    startPlayLoop();
+  }
+};
+
+function startPlayLoop() {
+  clearInterval(playInterval);
+  const baseDelay = 1500; // ms
+  const adjustedDelay = baseDelay / speedMultiplier;
+  playInterval = setInterval(() => {
+    if (currentGen < generations.length - 1) {
+      currentGen++;
+      updateGraphColors(currentGen);
+    } else {
+      clearInterval(playInterval);
+      document.getElementById('play').disabled = false;
+      document.getElementById('pause').disabled = true;
+    }
+  }, adjustedDelay);
+}
+</script>
+</body>
+</html>
+

@@ -12,22 +12,31 @@ public class RouletteSelection<T> implements ISelection<T> {
 
     @Override
     public Chromosome<T> select(Population<T> population) {
+        int populationSize = population.getPopulationSize();
+        if (populationSize == 0) return null; // ✅ حماية من Population فاضي
 
-        Chromosome<T> chosen = population.getIndividualOfIndex(0).getChromosome();
-        int populationSize = population.getPopulationSize(), randomNumber, sum = 0;
-        List<Integer> comulativeFitness = new ArrayList<>();
+        double sum = 0.0;
+        List<Double> cumulativeFitness = new ArrayList<>();
+
         for (int i = 0; i < populationSize; i++) {
-            sum += population.getIndividualOfIndex(i).getFitness();
-            comulativeFitness.set(i, sum);
+            double f = population.getIndividualOfIndex(i).getFitness();
+            sum += f;
+            cumulativeFitness.add(sum);
         }
-        randomNumber = random.nextInt(sum);
-        for (int i = 0; i < comulativeFitness.size(); i++) {
-            if (comulativeFitness.get(i) > randomNumber) {
-                chosen = population.getIndividualOfIndex(i).getChromosome();
-                break;
+
+        if (sum == 0) {
+            int randomIndex = random.nextInt(populationSize);
+            return population.getIndividualOfIndex(randomIndex).getChromosome();
+        }
+
+        double randomNumber = random.nextDouble() * sum;
+
+        for (int i = 0; i < cumulativeFitness.size(); i++) {
+            if (cumulativeFitness.get(i) >= randomNumber) {
+                return population.getIndividualOfIndex(i).getChromosome();
             }
         }
-        return chosen;
-    }
 
+        return population.getIndividualOfIndex(populationSize - 1).getChromosome();
+    }
 }
