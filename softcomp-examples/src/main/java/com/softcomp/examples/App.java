@@ -6,7 +6,9 @@ import com.softcomp.ga.app.GAConfig;
 import com.softcomp.ga.crossover.UniformCrossover;
 import com.softcomp.ga.mutation.OptionsFlipMutation;
 import com.softcomp.ga.replacement.ElitismReplacement;
+import com.softcomp.ga.replacement.GenerationalReplacement;
 import com.softcomp.ga.replacement.RandomReplacement;
+import com.softcomp.ga.replacement.SteadyStateReplacement;
 import com.softcomp.ga.selection.TournamentSelection;
 
 import java.awt.Desktop;
@@ -23,9 +25,9 @@ public class App {
         RandomIndividualGenerator individualGenerator = RandomIndividualGenerator.getInstance();
         LoggerService loggerService = LoggerService.getInstance();
 
-        int numOfNodes = 4;
-        double edgeProbability = 1;
-        int numOfColors = 4;
+        int numOfNodes = 3;
+        double edgeProbability = 0.5;
+        int numOfColors = 3;
         List<Integer> colorOptions = new ArrayList<>();
 
         for (int i = 0; i < numOfColors; i++) {
@@ -34,11 +36,11 @@ public class App {
 
         GAConfig<Integer> gaConfig = new GAConfig<>(
                 2,
-                1000,
-                new TournamentSelection<>(3),
+                30,
+                new TournamentSelection<>(2),
                 new UniformCrossover<>(0.9),
-                new OptionsFlipMutation<>(0.1, colorOptions),
-                new ElitismReplacement<>(),
+                new OptionsFlipMutation<>(0.9, colorOptions),
+                new RandomReplacement<>(),
                 null, // fitnessFunction (set during runtime)
                 null // no need for feasibility function
         );
