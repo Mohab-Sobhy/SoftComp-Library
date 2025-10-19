@@ -5,6 +5,7 @@ import com.softcomp.ga.models.Population;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class ElitismReplacement<T> implements IReplacement<T> {
@@ -16,7 +17,7 @@ public class ElitismReplacement<T> implements IReplacement<T> {
         List<Individual<T>> oldIndividuals=oldPopulation.getIndividuals();
         List<Individual<T>> offIndividuals=offspringPopulation.getIndividuals();
         List<Individual<T>> newIndividuals=Stream.
-        concat(oldIndividuals.stream(), offIndividuals.stream()).toList();
+        concat(oldIndividuals.stream(), offIndividuals.stream()).collect(Collectors.toList());
         newIndividuals.sort(Comparator.comparingDouble(Individual<T>::getFitness).reversed());   
         if (newIndividuals.size() > PopulationSize) {
            newIndividuals.subList(PopulationSize, newIndividuals.size()).clear();

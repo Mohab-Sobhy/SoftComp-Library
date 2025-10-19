@@ -1,5 +1,7 @@
 package com.softcomp.ga.models;
 
+import java.util.UUID;
+
 public class Individual<T> {
 
     private Chromosome<T> chromosome;
@@ -14,6 +16,7 @@ public class Individual<T> {
         this.fitness = 0.0;
         this.feasible = true;
         this.generationCreated = 0;
+        this.id=UUID.randomUUID().toString();
     }
 
     public Chromosome<T> getChromosome() {
