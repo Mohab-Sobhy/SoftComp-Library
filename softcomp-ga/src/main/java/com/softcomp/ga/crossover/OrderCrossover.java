@@ -7,6 +7,7 @@ import java.util.Random;
 
 import com.softcomp.ga.models.Chromosome;
 import com.softcomp.ga.models.Gene;
+import com.softcomp.ga.models.Individual;
 
 public class OrderCrossover<T> implements ICrossover<T> {
     protected Random random = new Random();
@@ -34,20 +35,20 @@ public class OrderCrossover<T> implements ICrossover<T> {
     }
 
     @Override
-    public double getRate(){
+    public double getRate() {
         return rate;
     }
 
     @Override
-    public void setRate(double rate){
+    public void setRate(double rate) {
         this.rate = rate;
     }
 
     @Override
-    public List<Chromosome<T>> crossover(Chromosome<T> parent1, Chromosome<T> parent2) {
+    public List<Individual<T>> crossover(Individual<T> parent1, Individual<T> parent2) {
 
-        List<Gene<T>> g1 = parent1.getGenes();
-        List<Gene<T>> g2 = parent2.getGenes();
+        List<Gene<T>> g1 = parent1.getChromosome().getGenes();
+        List<Gene<T>> g2 = parent2.getChromosome().getGenes();
         int genesSize = g1.size();
 
         // random list of random number of integers for points
@@ -58,12 +59,16 @@ public class OrderCrossover<T> implements ICrossover<T> {
             point2 = random.nextInt(maxPoint - minPoint + 1) + minPoint;
 
         // crossover for 2 children
-        List<Chromosome<T>> results = new ArrayList<>();
+        List<Individual<T>> results = new ArrayList<>();
         if (random.nextDouble() < rate) {
-            results.add(new Chromosome<T>(CrossGenes(g1, g2, Math.min(point1, point2), Math.max(point1, point2))));
+            results.add(new Individual<>(
+                    new Chromosome<T>(CrossGenes(g1, g2, Math.min(point1, point2), Math.max(point1, point2)))));
+            results.get(results.size() - 1).setParentId(parent1.getParentId());
         }
         if (random.nextDouble() < rate) {
-            results.add(new Chromosome<T>(CrossGenes(g2, g1, Math.min(point1, point2), Math.max(point1, point2))));
+            results.add(new Individual<>(
+                    new Chromosome<T>(CrossGenes(g2, g1, Math.min(point1, point2), Math.max(point1, point2)))));
+            results.get(results.size() - 1).setParentId(parent2.getParentId());
         }
         return results;
     }

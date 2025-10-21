@@ -42,6 +42,9 @@ public class GraphColoringFitnessFunction implements IFitnessFunction<Integer> {
             fitness = 1.0 - ((double) conflicts / totalEdges);
         }
 
+        // for lower number of distinct colors
+        fitness *= 100;
+        fitness += (graph.getNumberOfVertices() - chromosome.getNumberOfDistinctValues());
         return Math.max(0, Math.min(1, fitness));
     }
 }

@@ -13,10 +13,11 @@ public class Individual<T> {
 
     public Individual(Chromosome<T> chromosome) {
         this.chromosome = chromosome;
+        chromosome.individual = this;
         this.fitness = 0.0;
         this.feasible = true;
         this.generationCreated = 0;
-        this.id=UUID.randomUUID().toString();
+        this.id = UUID.randomUUID().toString();
     }
 
     public Chromosome<T> getChromosome() {
@@ -67,13 +68,11 @@ public class Individual<T> {
         this.parentId = parentId;
     }
 
-
     @Override
     public String toString() {
         return String.format(
                 "Individual{chromosome=%s, fitness=%.4f, feasible=%b, generation=%d}",
-                chromosome.toString(), fitness, feasible, generationCreated
-        );
+                chromosome.toString(), fitness, feasible, generationCreated);
     }
 
 }

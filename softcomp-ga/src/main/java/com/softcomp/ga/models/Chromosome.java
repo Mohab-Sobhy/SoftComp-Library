@@ -1,12 +1,22 @@
 package com.softcomp.ga.models;
 
+import java.util.HashSet;
 import java.util.List;
 
 public class Chromosome<T> {
     private List<Gene<T>> genes;
+    public Individual<T> individual;
 
     public Chromosome(List<Gene<T>> genes) {
         this.genes = genes;
+    }
+
+    public int getNumberOfDistinctValues() {
+        HashSet<T> used = new HashSet<>();
+        for (Gene<T> gene : genes) {
+            used.add(gene.get());
+        }
+        return used.size();
     }
 
     public List<Gene<T>> getGenes() {

@@ -52,27 +52,24 @@ public class GeneticAlgorithm<T> {
                 parents.add(parent);
             }
 
-            List<Chromosome<T>> offspring = new ArrayList<>();
+            List<Individual<T>> offspring = new ArrayList<>();
             for (int i = 0; i < parents.size(); i += 2) {
                 Chromosome<T> parent1 = parents.get(i);
                 Chromosome<T> parent2 = parents.get((i + 1) % parents.size());
-                if (parent1 == null || parent2 == null) continue;
+                if (parent1 == null || parent2 == null)
+                    continue;
 
-                List<Chromosome<T>> children = crossover.crossover(parent1, parent2);
+                List<Individual<T>> children = crossover.crossover(parent1.individual, parent2.individual);
                 offspring.addAll(children);
             }
 
-            List<Chromosome<T>> mutatedOffspring = new ArrayList<>();
-            for (Chromosome<T> child : offspring) {
-                Chromosome<T> mutated = mutation.mutate(child);
-                mutatedOffspring.add(mutated);
+            List<Individual<T>> mutatedOffspring = new ArrayList<>();
+            for (Individual<T> child : offspring) {
+                Chromosome<T> mutated = mutation.mutate(child.getChromosome());
+                mutatedOffspring.add(mutated.individual);
             }
 
-            List<Individual<T>> newIndividuals = new ArrayList<>();
-            for (Chromosome<T> c : mutatedOffspring) {
-                newIndividuals.add(new Individual<>(c));
-            }
-            Population<T> offspringPopulation = new Population<>(newIndividuals);
+            Population<T> offspringPopulation = new Population<>(mutatedOffspring);
             population = replacement.replace(population, offspringPopulation);
 
             evaluatePopulation(population, fitnessFunction);
