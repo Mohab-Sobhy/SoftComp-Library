@@ -3,17 +3,13 @@ package com.softcomp.examples;
 import com.softcomp.examples.graphcoloring.*;
 import com.softcomp.ga.LoggerService;
 import com.softcomp.ga.app.GAConfig;
+import com.softcomp.ga.crossover.OrderCrossover;
 import com.softcomp.ga.crossover.UniformCrossover;
 import com.softcomp.ga.mutation.OptionsFlipMutation;
 import com.softcomp.ga.replacement.ElitismReplacement;
-import com.softcomp.ga.replacement.GenerationalReplacement;
 import com.softcomp.ga.replacement.RandomReplacement;
-import com.softcomp.ga.replacement.SteadyStateReplacement;
 import com.softcomp.ga.selection.TournamentSelection;
 
-import java.awt.Desktop;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,8 +22,8 @@ public class App {
         LoggerService loggerService = LoggerService.getInstance();
 
         int numOfNodes = 4;
-        double edgeProbability = 0.67;
-        int numOfColors = 5;
+        double edgeProbability = 0.67777;
+        int numOfColors = 8;
         List<Integer> colorOptions = new ArrayList<>();
 
         for (int i = 0; i < numOfColors; i++) {
@@ -35,12 +31,12 @@ public class App {
         }
 
         GAConfig<Integer> gaConfig = new GAConfig<>(
-                2,
-                30,
+                4,
+                200,
                 new TournamentSelection<>(2),
                 new UniformCrossover<>(0.9),
-                new OptionsFlipMutation<>(0.9, colorOptions),
-                new ElitismReplacement<>(),
+                new OptionsFlipMutation<>(0.1, colorOptions),
+                new ElitismReplacement<>(1),
                 null, // fitnessFunction (set during runtime)
                 null // no need for feasibility function
         );
@@ -52,29 +48,12 @@ public class App {
                 loggerService,
                 numOfNodes,
                 edgeProbability,
-                numOfColors);
+                numOfColors
+        );
 
         app.run();
 
-        openVisualizer("visualizer.html");
+        app.openVisualizer("visualizer.html");
     }
 
-    private static void openVisualizer(String filePath) {
-        try {
-            File htmlFile = new File(filePath);
-            if (!htmlFile.exists()) {
-                System.err.println("❌ visualizer.html not found at: " + filePath);
-                return;
-            }
-
-            if (Desktop.isDesktopSupported()) {
-                Desktop.getDesktop().browse(htmlFile.toURI());
-                System.out.println("Opened visualizer in default browser.");
-            } else {
-                System.err.println("Desktop browsing not supported on this platform.");
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 }

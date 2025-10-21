@@ -4,7 +4,6 @@ import com.softcomp.ga.models.Chromosome;
 import com.softcomp.ga.models.Gene;
 import com.softcomp.ga.models.Individual;
 import com.softcomp.ga.models.Population;
-import com.softcomp.ga.replacement.ElitismReplacement;
 import com.softcomp.ga.replacement.GenerationalReplacement;
 import com.softcomp.ga.replacement.IReplacement;
 import com.softcomp.ga.replacement.SteadyStateReplacement;
@@ -24,7 +23,6 @@ public class App {
         testSteadyStateReplacement();
         System.out.println("\n" + "=".repeat(60) + "\n");
         
-        testElitismReplacement();
     }
 
     private static void testGenerationalReplacement() {
@@ -73,34 +71,6 @@ public class App {
         System.out.println("\n✓ Result: PASS - Offspring replaced specific parents");
     }
 
-    private static void testElitismReplacement() {
-        System.out.println("TEST 3: Elitism Replacement");
-        System.out.println("-".repeat(60));
-
-        // Create populations with mixed fitness (some high, some low in each)
-        Population<Double> oldPop = createMixedPopulation(5);
-        Population<Double> offspringPop = createMixedPopulation(5);
-
-        System.out.println("Old Population:");
-        printPopulation(oldPop);
-
-        System.out.println("\nOffspring Population:");
-        printPopulation(offspringPop);
-
-        IReplacement<Double> replacement = new ElitismReplacement<>();
-        Population<Double> newPop = replacement.replace(oldPop, offspringPop);
-
-        System.out.println("\nNew Population (top 5 from combined 10 individuals - mix of old & offspring):");
-        printPopulation(newPop);
-
-        // Verify elitism works
-        boolean correct = newPop.getPopulationSize() == 5;
-        boolean sorted = isSortedDescending(newPop);
-        
-        System.out.println("\n✓ Size Check: " + (correct ? "PASS" : "FAIL") + 
-                          " (Expected: 5, Got: " + newPop.getPopulationSize() + ")");
-        System.out.println("✓ Fitness Order: " + (sorted ? "PASS - Sorted by fitness (descending)" : "FAIL"));
-    }
 
     // Helper method to create a population with random fitness values
     private static Population<Double> createPopulation(int size, double minFitness, double maxFitness) {

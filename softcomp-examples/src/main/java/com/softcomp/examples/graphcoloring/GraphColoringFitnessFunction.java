@@ -3,13 +3,19 @@ package com.softcomp.examples.graphcoloring;
 import com.softcomp.examples.graphcoloring.models.Graph;
 import com.softcomp.ga.fitness.IFitnessFunction;
 import com.softcomp.ga.models.Chromosome;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class GraphColoringFitnessFunction implements IFitnessFunction<Integer> {
     private final Graph graph;
+    private final double conflictWeight;
+    private final double colorWeight;
 
-    public GraphColoringFitnessFunction(Graph graph) {
+    public GraphColoringFitnessFunction(Graph graph, double conflictWeight, double colorWeight) {
         this.graph = graph;
+        this.conflictWeight = conflictWeight;
+        this.colorWeight = colorWeight;
     }
 
     @Override
@@ -21,7 +27,7 @@ public class GraphColoringFitnessFunction implements IFitnessFunction<Integer> {
             List<Integer> neighbors = graph.getNeighbors(i);
 
             for (int neighbor : neighbors) {
-                if (neighbor > i) { // to prevent duplications
+                if (neighbor > i) { // prevent conflict
                     totalEdges++;
 
                     int color1 = chromosome.getGenes().get(i).get();
@@ -34,13 +40,15 @@ public class GraphColoringFitnessFunction implements IFitnessFunction<Integer> {
             }
         }
 
-        double fitness;
-
-        if (totalEdges == 0) {
-            fitness = 1.0;
-        } else {
-            fitness = 1.0 - ((double) conflicts / totalEdges);
+        Set<Integer> uniqueColors = new HashSet<>();
+        for (int i = 0; i < chromosome.getGenes().size(); i++) {
+            uniqueColors.add(chromosome.getGenes().get(i).get());
         }
+        int numColors = uniqueColors.size();
+
+        double conflictRatio = (totalEdges == 0) ? 0 : (double) conflicts / totalEdges;
+
+        double fitness = 1.0 / (1.0 + conflictWeight * conflictRatio + colorWeight * (numColors - 1));
 
         // for lower number of distinct colors
         fitness *= 100;

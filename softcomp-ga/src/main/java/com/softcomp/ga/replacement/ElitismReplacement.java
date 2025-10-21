@@ -1,28 +1,36 @@
 package com.softcomp.ga.replacement;
 
-import com.softcomp.ga.models.Individual;
 import com.softcomp.ga.models.Population;
-
+import com.softcomp.ga.models.Individual;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Stream;
+import java.util.Comparator;
 
 public class ElitismReplacement<T> implements IReplacement<T> {
-    private int populationSize = -1;
+    private int elitismCount;
+
+    public ElitismReplacement(int elitismCount) {
+        this.elitismCount = elitismCount;
+    }
 
     @Override
     public Population<T> replace(Population<T> oldPopulation, Population<T> offspringPopulation) {
-        if (populationSize == -1) populationSize = oldPopulation.getIndividuals().size();
-        List<Individual<T>> oldIndividuals = oldPopulation.getIndividuals();
-        List<Individual<T>> offIndividuals = offspringPopulation.getIndividuals();
-        List<Individual<T>> newIndividuals = new ArrayList<>(Stream.concat(oldIndividuals.stream(), offIndividuals.stream()).toList());
+        int populationSize = oldPopulation.getIndividuals().size();
+
+        List<Individual<T>> elites = oldPopulation.getIndividuals()
+                .stream()
+                .sorted(Comparator.comparingDouble(Individual<T>::getFitness).reversed())
+                .limit(elitismCount)
+                .toList();
+
+        List<Individual<T>> newIndividuals = new ArrayList<>(offspringPopulation.getIndividuals());
+        newIndividuals.addAll(elites);
+
         newIndividuals.sort(Comparator.comparingDouble(Individual<T>::getFitness).reversed());
-        if (newIndividuals.size() > populationSize) {
-            newIndividuals.subList(populationSize, newIndividuals.size()).clear();
-        }
-        Population<T> newPopulation = new Population<>();
-        newPopulation.setIndividuals(newIndividuals);
+        List<Individual<T>> finalList = newIndividuals.subList(0, Math.min(populationSize, newIndividuals.size()));
+
+        Population<T> newPopulation = new Population<>(finalList);
+
         return newPopulation;
     }
 }

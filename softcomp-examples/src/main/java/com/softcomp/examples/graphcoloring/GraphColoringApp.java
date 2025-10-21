@@ -7,6 +7,10 @@ import com.softcomp.ga.app.GeneticAlgorithm;
 import com.softcomp.ga.models.Individual;
 import com.softcomp.ga.models.Population;
 
+import java.awt.*;
+import java.io.File;
+import java.io.IOException;
+
 public class GraphColoringApp {
     private final GAConfig<Integer> gaConfig;
     private final RandomGraphGenerator graphGenerator;
@@ -53,10 +57,30 @@ public class GraphColoringApp {
 
         Population<Integer> population = initializePopulation(gaConfig.getPopulationSize(), graph.getNumberOfVertices(), graph.getNumColors());
 
-        gaConfig.setFitnessFunction(new GraphColoringFitnessFunction(graph));
+        gaConfig.setFitnessFunction(new GraphColoringFitnessFunction(graph , 10.0 , 0.05));
 
         GeneticAlgorithm<Integer> geneticAlgorithm = new GeneticAlgorithm<>(gaConfig , logger);
 
         geneticAlgorithm.run(population);
     }
+
+    public static void openVisualizer(String filePath) {
+        try {
+            File htmlFile = new File(filePath);
+            if (!htmlFile.exists()) {
+                System.err.println("visualizer.html not found at: " + filePath);
+                return;
+            }
+
+            if (Desktop.isDesktopSupported()) {
+                Desktop.getDesktop().browse(htmlFile.toURI());
+                System.out.println("Opened visualizer in default browser.");
+            } else {
+                System.err.println("Desktop browsing not supported on this platform.");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 }
