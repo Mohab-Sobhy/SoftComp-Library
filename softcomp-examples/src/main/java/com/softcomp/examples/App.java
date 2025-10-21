@@ -25,9 +25,9 @@ public class App {
         RandomIndividualGenerator individualGenerator = RandomIndividualGenerator.getInstance();
         LoggerService loggerService = LoggerService.getInstance();
 
-        int numOfNodes = 3;
-        double edgeProbability = 0.5;
-        int numOfColors = 3;
+        int numOfNodes = 4;
+        double edgeProbability = 0.67;
+        int numOfColors = 5;
         List<Integer> colorOptions = new ArrayList<>();
 
         for (int i = 0; i < numOfColors; i++) {
@@ -40,7 +40,7 @@ public class App {
                 new TournamentSelection<>(2),
                 new UniformCrossover<>(0.9),
                 new OptionsFlipMutation<>(0.9, colorOptions),
-                new RandomReplacement<>(),
+                new ElitismReplacement<>(),
                 null, // fitnessFunction (set during runtime)
                 null // no need for feasibility function
         );
@@ -52,8 +52,7 @@ public class App {
                 loggerService,
                 numOfNodes,
                 edgeProbability,
-                numOfColors
-        );
+                numOfColors);
 
         app.run();
 
