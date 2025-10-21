@@ -21,8 +21,8 @@ public class App {
         RandomIndividualGenerator individualGenerator = RandomIndividualGenerator.getInstance();
         LoggerService loggerService = LoggerService.getInstance();
 
-        int numOfNodes = 4;
-        double edgeProbability = 0.67777;
+        int numOfNodes = 10;
+        double edgeProbability = 0.6;
         int numOfColors = 8;
         List<Integer> colorOptions = new ArrayList<>();
 
