@@ -7,7 +7,9 @@ import com.softcomp.ga.crossover.OrderCrossover;
 import com.softcomp.ga.crossover.UniformCrossover;
 import com.softcomp.ga.mutation.OptionsFlipMutation;
 import com.softcomp.ga.replacement.ElitismReplacement;
+import com.softcomp.ga.replacement.GenerationalReplacement;
 import com.softcomp.ga.replacement.RandomReplacement;
+import com.softcomp.ga.replacement.SteadyStateReplacement;
 import com.softcomp.ga.selection.TournamentSelection;
 
 import java.util.ArrayList;

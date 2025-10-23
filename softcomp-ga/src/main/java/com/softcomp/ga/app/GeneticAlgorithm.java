@@ -73,7 +73,7 @@ public class GeneticAlgorithm<T> {
             population = replacement.replace(population, offspringPopulation);
 
             evaluatePopulation(population, fitnessFunction);
-
+         if(population.getBestIndividual()!=null)
             currentBest = population.getBestIndividual();
 
             logPopulation(population);

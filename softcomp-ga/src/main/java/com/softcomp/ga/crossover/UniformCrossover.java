@@ -43,11 +43,11 @@ public class UniformCrossover<T> implements ICrossover<T> {
         List<Individual<T>> results = new ArrayList<>();
         if (random.nextDouble() < rate) {
             results.add(new Individual<>(new Chromosome<T>(CrossGenes(g1, g2, flips))));
-            results.get(results.size() - 1).setParentId(parent1.getParentId());
+            results.get(results.size() - 1).setParentId(parent1.getId());
         }
         if (random.nextDouble() < rate) {
             results.add(new Individual<>(new Chromosome<T>(CrossGenes(g2, g1, flips))));
-            results.get(results.size() - 1).setParentId(parent1.getParentId());
+            results.get(results.size() - 1).setParentId(parent2.getId());
         }
         return results;
     }
