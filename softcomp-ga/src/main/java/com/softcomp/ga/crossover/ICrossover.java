@@ -2,7 +2,6 @@ package com.softcomp.ga.crossover;
 
 import java.util.List;
 
-import com.softcomp.ga.models.Chromosome;
 import com.softcomp.ga.models.Individual;
 
 public interface ICrossover<T> {

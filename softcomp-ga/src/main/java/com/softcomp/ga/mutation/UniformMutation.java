@@ -44,7 +44,6 @@ public class UniformMutation implements IMutation<Double>{
         return chromosome;
     }
 
-    //Checks mutation rate against every gene
     @Override
     public boolean checkRate(double mutationRate)
     {

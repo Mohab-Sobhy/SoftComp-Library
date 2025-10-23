@@ -62,7 +62,6 @@ public class NonUniformMutation implements IMutation<Double> {
         this.rate = rate;
     }
 
-    // 🔹 Getters and Setters for the other fields
 
     public int getT() {
         return T;

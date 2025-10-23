@@ -27,7 +27,7 @@ public class GraphColoringFitnessFunction implements IFitnessFunction<Integer> {
             List<Integer> neighbors = graph.getNeighbors(i);
 
             for (int neighbor : neighbors) {
-                if (neighbor > i) { // prevent conflict
+                if (neighbor > i) { 
                     totalEdges++;
 
                     int color1 = chromosome.getGenes().get(i).get();

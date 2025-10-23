@@ -13,7 +13,7 @@ public class RouletteSelection<T> implements ISelection<T> {
     @Override
     public Chromosome<T> select(Population<T> population) {
         int populationSize = population.getPopulationSize();
-        if (populationSize == 0) return null; // ✅ حماية من Population فاضي
+        if (populationSize == 0) return null; 
 
         double sum = 0.0;
         List<Double> cumulativeFitness = new ArrayList<>();

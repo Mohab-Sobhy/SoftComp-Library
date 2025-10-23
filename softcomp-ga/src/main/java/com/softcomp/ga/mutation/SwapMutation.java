@@ -5,7 +5,6 @@ import java.util.Random;
 import com.softcomp.ga.models.Chromosome;
 import com.softcomp.ga.models.Gene;
 
-// FOR Permutation Chromosomes (our case study will use it)
 
 public class SwapMutation<T> implements IMutation<T> {
 
@@ -35,7 +34,6 @@ public class SwapMutation<T> implements IMutation<T> {
         return chromosome;
     }
 
-    //Checks mutation rate against every gene
     @Override
     public boolean checkRate(double mutationRate)
     {

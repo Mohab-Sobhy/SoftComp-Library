@@ -29,7 +29,7 @@ public class RandomIndividualGenerator {
         // Generate random color for each vertex
         List< Gene<Integer> > genes = new ArrayList<>(numVertices);
         for (int i = 0; i < numVertices; i++) {
-            int color = random.nextInt(numColors); // random color index from [0 .. numColors-1]
+            int color = random.nextInt(numColors); 
             Gene<Integer> gene = new Gene(color);
             gene.setLowerBound(0);
             gene.setUpperBound(numColors-1);

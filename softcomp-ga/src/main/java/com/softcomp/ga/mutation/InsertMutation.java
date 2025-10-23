@@ -33,7 +33,6 @@ public class InsertMutation<T> implements IMutation<T> {
         return chromosome;
     }
 
-    //Checks mutation rate against every gene
     @Override
     public boolean checkRate(double mutationRate)
     {

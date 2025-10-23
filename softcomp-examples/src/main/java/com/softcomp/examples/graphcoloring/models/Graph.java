@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Graph {
     private final List<Node> nodes;
-    private int numColors = 3; // default number of colors (can be changed)
+    private int numColors = 3; 
 
     public Graph() {
         nodes = new ArrayList<>();

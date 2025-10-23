@@ -24,7 +24,6 @@ public class TournamentSelection<T> implements ISelection<T> {
 
         Individual<T> best = null;
 
-        // Pick random individuals and select the best one
         for (int i = 0; i < tournamentSize; i++) {
             int randomIndex = random.nextInt(population.getIndividuals().size());
             Individual<T> candidate = population.getIndividuals().get(randomIndex);
