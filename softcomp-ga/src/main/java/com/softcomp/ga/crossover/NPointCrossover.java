@@ -54,19 +54,17 @@ public class NPointCrossover<T> implements ICrossover<T> {
         List<Gene<T>> g2 = parent2.getChromosome().getGenes();
         int genesSize = g1.size();
 
-        // random list of random number of integers for points
         int maxNumOfPoints = genesSize / 2, minPoint = 1, maxPoint = genesSize;
         List<Integer> points = getRandomPoints(genesSize, maxNumOfPoints, minPoint, maxPoint);
 
-        // crossover for 2 children
         List<Individual<T>> results = new ArrayList<>();
         if (random.nextDouble() < rate) {
             results.add(new Individual<>(new Chromosome<T>(CrossGenes(g1, g2, points))));
-            results.get(results.size() - 1).setParentId(parent1.getParentId());
+            results.get(results.size() - 1).setParentId(parent1.getId());
         }
         if (random.nextDouble() < rate) {
             results.add(new Individual<>(new Chromosome<T>(CrossGenes(g2, g1, points))));
-            results.get(results.size() - 1).setParentId(parent2.getParentId());
+            results.get(results.size() - 1).setParentId(parent2.getId());
 
         }
         return results;
@@ -85,7 +83,6 @@ public class NPointCrossover<T> implements ICrossover<T> {
     public List<Chromosome<T>> crossover(Chromosome<T> parent1, Chromosome<T> parent2, List<Integer> points) {
         List<Gene<T>> g1 = parent1.getGenes();
         List<Gene<T>> g2 = parent2.getGenes();
-        // crossover for 2 children
         List<Chromosome<T>> results = new ArrayList<>();
         if (random.nextDouble() < rate) {
             results.add(new Chromosome<T>(CrossGenes(g1, g2, points)));

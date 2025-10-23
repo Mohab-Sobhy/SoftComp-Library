@@ -9,18 +9,15 @@ import com.softcomp.ga.feasibility.IFeasibility;
 
 public class GAConfig<T> {
 
-    // Core parameters
     private int populationSize = 50;
     private int numGenerations = 100;
     private double mutationRate = 0.05;
 
-    // Strategy objects
     private ISelection<T> selectionStrategy;
     private ICrossover<T> crossoverStrategy;
     private IMutation<T> mutationStrategy;
     private IReplacement<T> replacementStrategy;
 
-    // Problem-specific functions
     private IFitnessFunction<T> fitnessFunction;
     private IFeasibility<T> feasibilityHandler;
 

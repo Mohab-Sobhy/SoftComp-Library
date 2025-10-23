@@ -3,6 +3,7 @@ package com.softcomp.examples;
 import com.softcomp.examples.graphcoloring.*;
 import com.softcomp.ga.LoggerService;
 import com.softcomp.ga.app.GAConfig;
+import com.softcomp.ga.crossover.NPointCrossover;
 import com.softcomp.ga.crossover.OrderCrossover;
 import com.softcomp.ga.crossover.UniformCrossover;
 import com.softcomp.ga.mutation.OptionsFlipMutation;
@@ -33,14 +34,14 @@ public class App {
         }
 
         GAConfig<Integer> gaConfig = new GAConfig<>(
-                4,
+                10,
                 200,
                 new TournamentSelection<>(2),
                 new UniformCrossover<>(0.9),
                 new OptionsFlipMutation<>(0.1, colorOptions),
-                new ElitismReplacement<>(1),
-                null, // fitnessFunction (set during runtime)
-                null // no need for feasibility function
+                new ElitismReplacement<>(2),
+                null, 
+                null 
         );
 
         GraphColoringApp app = new GraphColoringApp(

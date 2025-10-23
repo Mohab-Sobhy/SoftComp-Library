@@ -34,7 +34,6 @@ public class InverseMutation<T> implements IMutation<T> {
                 j = temp;
             }
 
-            System.out.println(i + " " + j);
             Collections.reverse(genes.subList(i, j+1));
             
         }
@@ -42,7 +41,6 @@ public class InverseMutation<T> implements IMutation<T> {
         return chromosome;
     }
 
-    //Checks mutation rate against every gene
     @Override
     public boolean checkRate(double mutationRate)
     {
