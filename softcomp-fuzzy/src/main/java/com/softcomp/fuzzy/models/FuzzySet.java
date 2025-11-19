@@ -1,13 +1,13 @@
 package com.softcomp.fuzzy.models;
 
-import com.softcomp.fuzzy.membership.MembershipFunction;
+import com.softcomp.fuzzy.membership.IMembershipFunction;
 
 public class FuzzySet {
     private String name;
-    private MembershipFunction mf;
+    private IMembershipFunction mf;
 
 
-    public FuzzySet(String name, MembershipFunction mf) {
+    public FuzzySet(String name, IMembershipFunction mf) {
         this.name = name;
         this.mf = mf;
     }

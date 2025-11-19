@@ -1,5 +1,5 @@
 package com.softcomp.fuzzy.membership;
 
-public interface MembershipFunction {
+public interface IMembershipFunction {
     double compute(double x);
 }
