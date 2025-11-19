@@ -2,7 +2,6 @@ package com.softcomp.fuzzy.defuzzification;
 
 import java.util.Map;
 
-
 public interface IDefuzzifier {
     /**
      * Converts aggregated fuzzy output values into a crisp number.
