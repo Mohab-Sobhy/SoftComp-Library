@@ -3,14 +3,9 @@ package com.softcomp.examples;
 import com.softcomp.examples.graphcoloring.*;
 import com.softcomp.ga.LoggerService;
 import com.softcomp.ga.app.GAConfig;
-import com.softcomp.ga.crossover.NPointCrossover;
-import com.softcomp.ga.crossover.OrderCrossover;
 import com.softcomp.ga.crossover.UniformCrossover;
 import com.softcomp.ga.mutation.OptionsFlipMutation;
 import com.softcomp.ga.replacement.ElitismReplacement;
-import com.softcomp.ga.replacement.GenerationalReplacement;
-import com.softcomp.ga.replacement.RandomReplacement;
-import com.softcomp.ga.replacement.SteadyStateReplacement;
 import com.softcomp.ga.selection.TournamentSelection;
 
 import java.util.ArrayList;
@@ -18,7 +13,6 @@ import java.util.List;
 
 public class App {
     public static void main(String[] args) {
-        System.out.println("softcomp-examples module started!");
 
         RandomGraphGenerator graphGenerator = RandomGraphGenerator.getInstance();
         RandomIndividualGenerator individualGenerator = RandomIndividualGenerator.getInstance();
