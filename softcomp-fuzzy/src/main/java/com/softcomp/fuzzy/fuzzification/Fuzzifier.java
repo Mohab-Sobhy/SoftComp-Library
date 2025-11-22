@@ -6,7 +6,7 @@ import com.softcomp.fuzzy.models.LinguisticVariable;
 
 import java.util.List;
 
-public class IFuzzifier {
+public class Fuzzifier {
     /**
      * Fuzzifies a crisp input based on the variable's fuzzy sets.
      */
