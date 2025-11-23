@@ -39,4 +39,8 @@ public class TrapezoidalMF implements IMembershipFunction{
     }
   }
 
+  public double getCentroid() {
+        return (a + b + c + d) / 4;
+    }
+
 }

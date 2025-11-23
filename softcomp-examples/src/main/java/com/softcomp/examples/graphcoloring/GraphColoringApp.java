@@ -57,7 +57,7 @@ public class GraphColoringApp {
 
         Population<Integer> population = initializePopulation(gaConfig.getPopulationSize(), graph.getNumberOfVertices(), graph.getNumColors());
 
-        gaConfig.setFitnessFunction(new GraphColoringFitnessFunction(graph , 10.0 , 0.05));
+        gaConfig.setFitnessFunction(new GraphColoringFitnessFunction(graph , 100.0 , 0.05));
 
         GeneticAlgorithm<Integer> geneticAlgorithm = new GeneticAlgorithm<>(gaConfig , logger);
 

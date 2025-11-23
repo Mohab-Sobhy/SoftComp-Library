@@ -36,4 +36,8 @@ public class TriangularMF implements IMembershipFunction {
       }
 }
 
+    public double getCentroid() {
+        return (a + b + c) / 3;
+    }
+
 }
