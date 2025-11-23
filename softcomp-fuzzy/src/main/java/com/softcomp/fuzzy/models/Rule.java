@@ -11,7 +11,7 @@ public class Rule {
         this.description = description;
     }
 
-    public double evaluate(Map<String, Double> inputs) {
+    public double evaluate(FuzzifiedInputs fuzzifiedInputs) {
         return 0.0; // Firing strength (TODO: implement later)
     }
 }
