@@ -8,5 +8,5 @@ public interface IInferenceEngine {
     /**
      * Performs fuzzy inference and returns aggregated fuzzy outputs.
      */
-    public Map<String, Double> infer(RuleBase rules, FuzzifiedInputs inputs);
+    public Map<String, Double> infer(RuleBase rules, FuzzifiedInputs inputs, String outputName);
 }

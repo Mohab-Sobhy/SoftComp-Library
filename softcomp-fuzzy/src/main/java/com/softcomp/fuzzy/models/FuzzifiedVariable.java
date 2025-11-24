@@ -23,4 +23,8 @@ public class FuzzifiedVariable {
     public Map<String, Double> getMemberships() {
         return memberships;
     }
+
+    public Double getMemberShipValue(String fuzzySetName) {
+        return memberships.get(fuzzySetName);
+    }
 }
