@@ -4,7 +4,7 @@ import java.util.Map;
 import com.softcomp.fuzzy.models.FuzzySet;
 import com.softcomp.fuzzy.models.LinguisticVariable;
 
-public class WeightedAverage implements IDefuzzifierSugeno {
+public class WeightedAverageSugeno implements IDefuzzifierSugeno {
 
     @Override
     public double defuzzify(Map<String, Double> ruleOutput, Map<String, Double> aggregatedOutput) {
