@@ -1,5 +1,5 @@
 package com.softcomp.fuzzy.inference.operators;
 
 public interface SNorm {
-    double apply(double a, double b);
+    public double apply(double a, double b);
 }

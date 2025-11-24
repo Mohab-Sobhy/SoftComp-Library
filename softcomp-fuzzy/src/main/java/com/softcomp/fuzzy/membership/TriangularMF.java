@@ -1,7 +1,7 @@
 package com.softcomp.fuzzy.membership;
 
 public class TriangularMF implements IMembershipFunction {
-   public double a = 2;
+    public double a = 2;
     public double b = 1;
     public double c = 0;
 
@@ -14,11 +14,11 @@ public class TriangularMF implements IMembershipFunction {
     @Override
     public double compute(double x) {
         validateInput();
-        if (x == b) {
-            return 1;
-        } else if (x >= c || x <= a) {
+        if (x <= a || x >= c)
             return 0;
-        } else if (x < b) {
+        if (x == b)
+            return 1;
+        if (x < b) {
             double slope = (1 - 0) / (b - a);
             double con = 1 - slope * b;
             return (x * slope + con);
@@ -32,9 +32,9 @@ public class TriangularMF implements IMembershipFunction {
     @Override
     public void validateInput() {
         if (!(a <= b && b <= c)) {
-            throw new IllegalArgumentException("Require a < b < c");
-      }
-}
+            throw new IllegalArgumentException("Require a <= b <= c");
+        }
+    }
 
     public double getCentroid() {
         return (a + b + c) / 3;

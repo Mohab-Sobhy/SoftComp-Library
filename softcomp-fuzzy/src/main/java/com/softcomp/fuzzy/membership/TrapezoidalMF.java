@@ -1,6 +1,6 @@
 package com.softcomp.fuzzy.membership;
 
-public class TrapezoidalMF implements IMembershipFunction{
+public class TrapezoidalMF implements IMembershipFunction {
     public double a = 2;
     public double b = 1;
     public double c = 0;
@@ -35,11 +35,11 @@ public class TrapezoidalMF implements IMembershipFunction{
     @Override
     public void validateInput() {
         if (!(a <= b && b <= c && c <= d)) {
-            throw new IllegalArgumentException("Require a < b < c < d");
+            throw new IllegalArgumentException("Require a <= b <= c <= d");
+        }
     }
-  }
 
-  public double getCentroid() {
+    public double getCentroid() {
         return (a + b + c + d) / 4;
     }
 

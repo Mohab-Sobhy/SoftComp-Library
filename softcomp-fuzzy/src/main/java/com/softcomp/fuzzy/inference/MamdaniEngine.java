@@ -18,6 +18,22 @@ public class MamdaniEngine implements IInferenceEngine {
         this.OR = OR;
     }
 
+    public void setSNorm(SNorm OR) {
+        this.OR = OR;
+    }
+
+    public SNorm getSNorm() {
+        return OR;
+    }
+
+    public void setTNorm(TNorm AND) {
+        this.AND = AND;
+    }
+
+    public TNorm getTNorm() {
+        return AND;
+    }
+
     @Override
     public Map<String, Double> infer(RuleBase rules, FuzzifiedInputs inputs, String outputName) {
         Map<String, Double> aggregated = new HashMap<>();
