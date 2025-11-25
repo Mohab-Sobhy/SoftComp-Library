@@ -14,10 +14,10 @@ public class TriangularMF implements IMembershipFunction {
     @Override
     public double compute(double x) {
         validateInput();
-        if (x <= a || x >= c)
-            return 0;
         if (x == b)
             return 1;
+        if (x <= a || x >= c)
+            return 0;
         if (x < b) {
             double slope = (1 - 0) / (b - a);
             double con = 1 - slope * b;

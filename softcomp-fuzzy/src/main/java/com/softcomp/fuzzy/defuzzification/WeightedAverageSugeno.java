@@ -1,26 +1,24 @@
 package com.softcomp.fuzzy.defuzzification;
 
-import java.util.Map;
-import com.softcomp.fuzzy.models.FuzzySet;
-import com.softcomp.fuzzy.models.LinguisticVariable;
+import java.util.List;
+
+
+import com.softcomp.fuzzy.models.Pair;
+
 
 public class WeightedAverageSugeno implements IDefuzzifierSugeno {
 
     @Override
-    public double defuzzify(Map<String, Double> ruleOutput, Map<String, Double> aggregatedOutput) {
+    public double defuzzify(List<Pair<Double,Double>> pairs) {
 
         double numerator = 0;
         double denominator = 0;
 
-        for (Map.Entry<String, Double> entry : aggregatedOutput.entrySet()) {
+        for (Pair<Double,Double> pair :pairs) {
 
-            String name = entry.getKey();
-            double membership = entry.getValue();
-
-            double ruleCrispOutput = ruleOutput.get(name);
-
-            numerator = numerator + (membership * ruleCrispOutput);
-            denominator = denominator + membership;
+            
+            numerator = numerator + (pair.first * pair.second);
+            denominator = denominator + pair.second;
         }
         if(denominator == 0) return 0;
         return numerator / denominator;

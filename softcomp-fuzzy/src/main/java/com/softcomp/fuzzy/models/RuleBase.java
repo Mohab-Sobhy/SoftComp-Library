@@ -9,4 +9,16 @@ public class RuleBase {
     public void addRule(Rule r) { rules.add(r); }
 
     public List<Rule> getRules() { return rules; }
+
+    public void setRules(List<Rule> rules){
+        this.rules=rules;
+    }
+
+    public boolean removeRule(Rule r) {
+        return rules.remove(r);
+    }
+
+    public Rule removeRuleAt(int index) {
+        return rules.remove(index);
+    }
 }
