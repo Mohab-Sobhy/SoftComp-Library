@@ -20,11 +20,10 @@ public class LinguisticVariable {
         sets.put(set.getName(), set);
     }
 
-    public List<FuzzySet> getAllFuzzysets(){
+    public List<FuzzySet> getAllFuzzysets() {
         return new ArrayList<>(sets.values());
     }
 
-    // Getters
     public String getName() {
         return name;
     }
@@ -41,7 +40,6 @@ public class LinguisticVariable {
         return sets;
     }
 
-    // Setters
     public void setName(String name) {
         this.name = name;
     }

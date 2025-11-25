@@ -1,9 +1,5 @@
 package com.softcomp.fuzzy;
 
-import com.softcomp.fuzzy.FuzzyProgram;
-import com.softcomp.fuzzy.models.Rule;
-import com.softcomp.fuzzy.models.Triplet;
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -11,7 +7,7 @@ import java.util.Map;
 import java.util.Scanner;
 
 public class App {
-        private static final String RULES_FILE = "fire_risk_rules.txt";
+    private static final String RULES_FILE = "fire_risk_rules.txt";
 
     public static void main(String[] args) throws IOException {
         Scanner scanner = new Scanner(System.in);
@@ -29,8 +25,7 @@ public class App {
 
         FuzzyProgram fuzzyProgram = new FuzzyProgram(
                 List.of("Temperature", "SmokeDensity", "GasConcentration"),
-                "FireRisk"
-        );
+                "FireRisk");
         fuzzyProgram.loadRulesFromFile(RULES_FILE);
         Double crispValue = fuzzyProgram.runFuzzy(values);
         System.out.println("risk is " + crispValue);

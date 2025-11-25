@@ -5,19 +5,16 @@ import com.softcomp.fuzzy.inference.operators.TNorm;
 
 public class Rule {
 
-    // Antecedents (inputs)
     private Triplet<String, String, Boolean> antecedent1;
-    private Triplet<String, String, Boolean> antecedent2; // optional
+    private Triplet<String, String, Boolean> antecedent2;
 
-    // Output (consequence)
     private Triplet<String, String, Boolean> consequent;
 
-    private String operator; // AND / OR
+    private String operator;
     private double weight = 1.0;
     private boolean enabled = true;
     private Double crispValue = 0.0;
 
-    // Constructor for 2-antecedent rule
     public Rule(
             Triplet<String, String, Boolean> antecedent1,
             Triplet<String, String, Boolean> antecedent2,
@@ -29,7 +26,6 @@ public class Rule {
         this.operator = operator;
     }
 
-    // Constructor for single-antecedent rule
     public Rule(
             Triplet<String, String, Boolean> antecedent1,
             Triplet<String, String, Boolean> consequent,
@@ -52,7 +48,6 @@ public class Rule {
         this.crispValue = crispValue;
     }
 
-    // Constructor for single-antecedent rule
     public Rule(
             Triplet<String, String, Boolean> antecedent1,
             Triplet<String, String, Boolean> consequent,
@@ -64,7 +59,6 @@ public class Rule {
         this.crispValue = crispValue;
     }
 
-    // Getters (optional but clean)
     public Triplet<String, String, Boolean> getAntecedent1() {
         return antecedent1;
     }
@@ -106,82 +100,36 @@ public class Rule {
             alpha = operator.equals("AND") ? AND.apply(val1, val2) : OR.apply(val1, val2);
         }
 
-        // firing strength * weight
         return alpha * weight;
     }
-    public void setEnabled(boolean enable){
-        this.enabled=enable;
+
+    public void setEnabled(boolean enable) {
+        this.enabled = enable;
     }
 
     @Override
-public boolean equals(Object o) {
-    if (this == o) return true;
-    if (!(o instanceof Rule)) return false;
-    Rule r = (Rule) o;
-    return operator.equals(r.operator)
-        && weight == r.weight
-        && crispValue.equals(r.crispValue)
-        && antecedentEquals(antecedent1, r.antecedent1)
-        && antecedentEquals(antecedent2, r.antecedent2)
-        && antecedentEquals(consequent, r.consequent);
-}
-private boolean antecedentEquals(Triplet<String,String,Boolean> a, Triplet<String,String,Boolean> b) {
-    if (a == null && b == null) return true;
-    if (a == null || b == null) return false;
-    return a.first.equals(b.first) &&
-           a.second.equals(b.second) &&
-           a.third.equals(b.third);
-}
- private String formatTriplet(Triplet<String, String, Boolean> triplet) {
-        if (triplet == null) {
-            return null;
-        }
-        String variable = triplet.first;
-        String fuzzySet = triplet.second;
-        boolean isPositive = triplet.third; // true for IS, false for IS NOT (negation)
-
-        StringBuilder sb = new StringBuilder();
-        sb.append("(").append(variable).append(" is ");
-        if (!isPositive) {
-            sb.append("NOT ");
-        }
-        sb.append(fuzzySet).append(")");
-        return sb.toString();
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (!(o instanceof Rule))
+            return false;
+        Rule r = (Rule) o;
+        return operator.equals(r.operator)
+                && weight == r.weight
+                && crispValue.equals(r.crispValue)
+                && antecedentEquals(antecedent1, r.antecedent1)
+                && antecedentEquals(antecedent2, r.antecedent2)
+                && antecedentEquals(consequent, r.consequent);
     }
 
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-
-        // --- 1. Antecedent (IF part) ---
-        sb.append("IF ");
-        sb.append(formatTriplet(antecedent1));
-
-        // Append second antecedent if it exists
-        if (antecedent2 != null) {
-            sb.append(" ").append(operator).append(" ");
-            sb.append(formatTriplet(antecedent2));
-        }
-
-        // --- 2. Consequent (THEN part) ---
-        sb.append(" THEN ");
-        sb.append(formatTriplet(consequent));
-
-        // --- 3. Crisp Value and Weight ---
-        // Assuming this is a Sugeno-type consequence (using crispValue)
-        sb.append(" [Crisp Value: ").append(String.format("%.2f", crispValue));
-        
-        // Add weight if it's not the default 1.0
-        if (weight != 1.0) {
-            sb.append(" | Weight: ").append(String.format("%.2f", weight));
-        }
-
-        // Add enabled status if disabled
-        if (!enabled) {
-            sb.append(" | DISABLED");
-        }
-        sb.append("]");
-
-        return sb.toString();
+    private boolean antecedentEquals(Triplet<String, String, Boolean> a, Triplet<String, String, Boolean> b) {
+        if (a == null && b == null)
+            return true;
+        if (a == null || b == null)
+            return false;
+        return a.first.equals(b.first) &&
+                a.second.equals(b.second) &&
+                a.third.equals(b.third);
     }
+
 }
