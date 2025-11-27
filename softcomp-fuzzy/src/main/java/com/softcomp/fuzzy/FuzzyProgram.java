@@ -18,7 +18,6 @@ import com.softcomp.fuzzy.defuzzification.WeightedAverageMamdani;
 import com.softcomp.fuzzy.defuzzification.WeightedAverageSugeno;
 import com.softcomp.fuzzy.fuzzification.Fuzzifier;
 import com.softcomp.fuzzy.inference.IInferenceEngine;
-import com.softcomp.fuzzy.inference.MamdaniEngine;
 import com.softcomp.fuzzy.inference.SugenoEngine;
 import com.softcomp.fuzzy.inference.operators.SNormMax;
 import com.softcomp.fuzzy.inference.operators.TNormMin;

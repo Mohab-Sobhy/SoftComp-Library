@@ -11,11 +11,13 @@ public class App {
 
     public static void main(String[] args) throws IOException {
         Scanner scanner = new Scanner(System.in);
-        System.out.println("please enter temperature from 0 to 100");
+        System.out.println("please enter temperature (°C) from 0 to 100");
         Double temp = scanner.nextDouble();
-        System.out.println("please enter smoke density from 0 to 100");
+
+        System.out.println("please enter smoke density (%/m) from 0 to 100");
         Double smoke = scanner.nextDouble();
-        System.out.println("please enter gas concentration from 0 to 100");
+
+        System.out.println("please enter gas concentration (ppm) from 0 to 100");
         Double gas = scanner.nextDouble();
 
         Map<String, Double> values = new HashMap<>();
