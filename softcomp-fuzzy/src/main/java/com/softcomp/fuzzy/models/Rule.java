@@ -96,7 +96,6 @@ public class Rule {
         if (antecedent2 != null) {
             double val2 = inputs.get(antecedent2.first).getMemberShipValue(antecedent2.second);
             val2 = antecedent2.third ? val2 : 1 - val2;
-
             alpha = operator.equals("AND") ? AND.apply(val1, val2) : OR.apply(val1, val2);
         }
 

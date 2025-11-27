@@ -31,15 +31,20 @@ public class App {
         System.out.println("Fire risk is " + crispValue);
         System.out.println("Fire risk class is " + getRiskClass(crispValue));
     }
+
     public static String getRiskClass(Double crispValue) {
-    if (crispValue == null) return "unknown";
+        if (crispValue == null)
+            return "unknown";
 
-    if (crispValue <= 25) return "very low";
-    if (crispValue <= 50) return "low";
-    if (crispValue <= 75) return "medium";
-    if (crispValue <= 85) return "high";
-    return "very high";
-}
-
+        if (crispValue <= 25)
+            return "very low";
+        if (crispValue <= 50)
+            return "low";
+        if (crispValue <= 75)
+            return "medium";
+        if (crispValue <= 85)
+            return "high";
+        return "very high";
+    }
 
 }
