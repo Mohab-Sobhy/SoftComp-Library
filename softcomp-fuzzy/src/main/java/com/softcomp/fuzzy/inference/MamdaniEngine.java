@@ -43,7 +43,6 @@ public class MamdaniEngine implements IInferenceEngine {
             }
             Double val = rule.evaluate(inputs, AND, OR);
             String key = rule.getConsequent().second;
-            System.out.println(rule.toString() +" "+rule.evaluate(inputs, AND, OR));
             if (aggregated.get(key) == null) {
                 aggregated.put(key, val);
             } else {

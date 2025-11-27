@@ -12,7 +12,7 @@ public class MaxMembership implements IDefuzzifierMamdani {
 
         double maxMembership = 0.0;
         double maxCentroid = 0.0;
-        int maxCount = 0;   //If many fuzzy sets have the same maximum then this means multiple peaks
+        int maxCount = 0;   
         FuzzySet maxFuzzySet = null;
 
         for (Map.Entry<String, Double> entry : aggregatedOutput.entrySet()) {
