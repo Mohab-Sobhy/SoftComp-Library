@@ -45,7 +45,6 @@ public class Layer {
             this.biases = biases;
     }
 
-    // TODO: add forward and backward methods here
     public double[] forward(double[] input) {
         double[] output = new double[outputSize];
         try {
@@ -67,24 +66,8 @@ public class Layer {
     }
 
     public double[] backward(double[] gradOutput, double learningRate) {
-        // Step 1: Compute dL/dZ using activation derivative
         double[] gradZ = activationFunction.backward(outputCache, gradOutput);
 
-        // Step 2: Compute gradient w.r.t weights and biases
-        double[][] gradW = new double[inputSize][outputSize];
-        double[] gradB = new double[outputSize];
-
-        for (int i = 0; i < inputSize; i++) {
-            for (int j = 0; j < outputSize; j++) {
-                gradW[i][j] = inputCache[i] * gradZ[j];
-            }
-        }
-
-        for (int j = 0; j < outputSize; j++) {
-            gradB[j] = gradZ[j];
-        }
-
-        // Step 3: Compute gradient w.r.t input (to pass to previous layer)
         double[] gradInput = new double[inputSize];
         for (int i = 0; i < inputSize; i++) {
             double sum = 0.0;
@@ -94,18 +77,16 @@ public class Layer {
             gradInput[i] = sum;
         }
 
-        // Step 4: Update weights and biases
         for (int i = 0; i < inputSize; i++) {
             for (int j = 0; j < outputSize; j++) {
-                weights[i][j] -= learningRate * gradW[i][j];
+                weights[i][j] -= learningRate * inputCache[i] * gradZ[j];
             }
         }
 
         for (int j = 0; j < outputSize; j++) {
-            biases[j] -= learningRate * gradB[j];
+            biases[j] -= learningRate * gradZ[j];
         }
 
-        // Step 5: Return gradient to pass to previous layer
         return gradInput;
     }
 
