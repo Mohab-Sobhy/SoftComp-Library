@@ -1,4 +1,4 @@
-package com.softcomp.nn.activaitionfunction;
+package com.softcomp.nn.activationfunction;
 
 public class Linear extends ActivationFunction {
     double applyFunction(double x) {

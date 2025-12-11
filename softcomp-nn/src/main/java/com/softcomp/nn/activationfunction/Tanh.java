@@ -1,4 +1,4 @@
-package com.softcomp.nn.activaitionfunction;
+package com.softcomp.nn.activationfunction;
 
 public class Tanh extends ActivationFunction {
     public double eulerNumber = Math.E;
