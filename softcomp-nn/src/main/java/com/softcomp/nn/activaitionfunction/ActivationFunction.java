@@ -18,10 +18,10 @@ public abstract class ActivationFunction {
 
     public double[] backward(double[] z, double[] gradOutput) {
         int arrLength = z.length;
-        double[] derivatives = new double[arrLength];
+        double[] derivativeByGrad = new double[arrLength];
         for (int i = 0; i < arrLength; i++) {
-            derivatives[i] = derivative(z[i]);
+            derivativeByGrad[i] = derivative(z[i]) * gradOutput[i];
         }
-        return derivatives;
+        return derivativeByGrad;
     }
 }
