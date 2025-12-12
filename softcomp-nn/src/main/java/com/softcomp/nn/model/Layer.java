@@ -1,6 +1,5 @@
 package com.softcomp.nn.model;
 
-import java.io.EOFException;
 
 import com.softcomp.nn.activationfunction.ActivationFunction;
 import com.softcomp.nn.initializers.WeightInitializer;
