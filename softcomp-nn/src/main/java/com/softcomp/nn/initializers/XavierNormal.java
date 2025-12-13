@@ -2,7 +2,7 @@ package com.softcomp.nn.initializers;
 
 import java.util.Random;
 
-public class XavierNormal extends WeightInitializer {
+public class XavierNormal extends Random implements WeightInitializer {
 
     public double[][] initialize(int fanIn, int fanOut) {
         double std = Math.sqrt(2.0 / (fanIn + fanOut));

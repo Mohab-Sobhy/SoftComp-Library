@@ -2,7 +2,7 @@ package com.softcomp.nn.initializers;
 
 import java.util.Random;
 
-public class RandomUniform extends WeightInitializer {
+public class RandomUniform extends Random implements WeightInitializer {
     public double[][] initialize(int fanIn, int fanOut) {
         double limit = 1.0 / Math.sqrt(fanIn);
         double min = -limit;
