@@ -1,7 +1,5 @@
 package com.softcomp.nn.activationfunction;
 
-//make sure the derivative is used for all activation functions
-//Sigmoid, ReLU, Tanh, Linear.
 public abstract class ActivationFunction {
     abstract double applyFunction(double x);
 

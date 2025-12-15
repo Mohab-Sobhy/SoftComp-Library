@@ -8,11 +8,11 @@ public class RandomUniform extends Random implements WeightInitializer {
         double min = -limit;
         double max = limit;
 
-        double[][] W = new double[fanOut][fanIn];
+        double[][] W = new double[fanIn][fanOut];
         Random rand = new Random();
 
-        for (int i = 0; i < fanOut; i++) {
-            for (int j = 0; j < fanIn; j++) {
+        for (int i = 0; i < fanIn; i++) {
+            for (int j = 0; j < fanOut; j++) {
                 W[i][j] = min + (max - min) * rand.nextDouble();
             }
         }

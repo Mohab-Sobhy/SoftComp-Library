@@ -11,18 +11,19 @@ import com.softcomp.nn.activationfunction.Sigmoid;
 import com.softcomp.nn.initializers.WeightInitializer;
 import com.softcomp.nn.initializers.XavierNormal;
 import com.softcomp.nn.lossfunctions.LossFunction;
+import com.softcomp.nn.lossfunctions.MeanSquaredError;
 import com.softcomp.nn.model.Layer;
 import com.softcomp.nn.model.Network;
 import com.softcomp.nn.model.SplitResult;
 
 public class Model {
    private Network network;
-   private LossFunction lossFunction;
-   private WeightInitializer weightInitializer=new XavierNormal();
+   private LossFunction lossFunction = new MeanSquaredError();
+   private WeightInitializer weightInitializer = new XavierNormal();
    private ActivationFunction activationFunction = new Sigmoid();
-   private int batchSize=3;
-   private int epoches=100;
-   private double learningRate=0.2;
+   private int batchSize = 3;
+   private int epoches = 100;
+   private double learningRate = 0.01;
    private List<Double> loses;
 
    public Model(Network network) {
@@ -32,94 +33,109 @@ public class Model {
       this.network = network;
    }
 
-  public Model() {
+   public Model() {
       createNetwork();
    }
-   public Model(int numOfLayers,int[] inputSizes,int[] outputSizes,
-      ActivationFunction[] activationFunctions,WeightInitializer[] weightInitializers,LossFunction lossFunction){
-     createNetwork(numOfLayers, inputSizes, outputSizes, activationFunctions, weightInitializers, lossFunction);
+
+   public Model(int numOfLayers, int[] inputSizes, int[] outputSizes,
+         ActivationFunction[] activationFunctions, WeightInitializer[] weightInitializers, LossFunction lossFunction) {
+      createNetwork(numOfLayers, inputSizes, outputSizes, activationFunctions, weightInitializers, lossFunction);
    }
-   public Model(int numOfLayers,int[] inputSizes,int[] outputSizes){
-       createNetwork(numOfLayers, inputSizes, outputSizes);
+
+   public Model(int numOfLayers, int[] inputSizes, int[] outputSizes) {
+      createNetwork(numOfLayers, inputSizes, outputSizes);
    }
-   public void createNetwork(int numOfLayers,int[] inputSizes,int[] outputSizes,
-      ActivationFunction[] activationFunctions,WeightInitializer[] weightInitializers,LossFunction lossFunction){
-          Objects.requireNonNull(inputSizes,"input sizes cannot be null");
-      Objects.requireNonNull(outputSizes,"output sizes cannot be null");
-      Objects.requireNonNull(activationFunctions,"activaition functions cannot be null");
-      Objects.requireNonNull(weightInitializers,"weight initializers functions cannot be null");
-      Objects.requireNonNull(weightInitializers,"loss function cannot be null cannot be null");
-      Layer[] layers=new Layer[numOfLayers];
-      for(int i=0;i<numOfLayers;i++){
-         Objects.requireNonNull(activationFunctions[i],"activaition function cannot be null");
-         Objects.requireNonNull(weightInitializers[i],"weight initializer functions cannot be null");
-         layers[i]=new Layer(inputSizes[i], outputSizes[i], activationFunctions[i], weightInitializers[i]);
+
+   public void createNetwork(int numOfLayers, int[] inputSizes, int[] outputSizes,
+         ActivationFunction[] activationFunctions, WeightInitializer[] weightInitializers, LossFunction lossFunction) {
+      Objects.requireNonNull(inputSizes, "input sizes cannot be null");
+      Objects.requireNonNull(outputSizes, "output sizes cannot be null");
+      Objects.requireNonNull(activationFunctions, "activaition functions cannot be null");
+      Objects.requireNonNull(weightInitializers, "weight initializers functions cannot be null");
+      Objects.requireNonNull(weightInitializers, "loss function cannot be null cannot be null");
+      Layer[] layers = new Layer[numOfLayers];
+      for (int i = 0; i < numOfLayers; i++) {
+         Objects.requireNonNull(activationFunctions[i], "activaition function cannot be null");
+         Objects.requireNonNull(weightInitializers[i], "weight initializer functions cannot be null");
+         layers[i] = new Layer(inputSizes[i], outputSizes[i], activationFunctions[i], weightInitializers[i]);
       }
-      this.lossFunction=lossFunction;
-      network=new Network(layers);
+      this.lossFunction = lossFunction;
+      network = new Network(layers);
+   }
+
+   public void createNetwork(int numOfLayers, int[] inputSizes, int[] outputSizes) {
+      Objects.requireNonNull(inputSizes, "input sizes cannot be null");
+      Objects.requireNonNull(outputSizes, "output sizes cannot be null");
+      Layer[] layers = new Layer[numOfLayers];
+      for (int i = 0; i < numOfLayers; i++) {
+         layers[i] = new Layer(inputSizes[i], outputSizes[i], activationFunction, weightInitializer);
       }
-      public void createNetwork(int numOfLayers,int[] inputSizes,int[] outputSizes){
-          Objects.requireNonNull(inputSizes,"input sizes cannot be null");
-      Objects.requireNonNull(outputSizes,"output sizes cannot be null");
-        Layer[] layers=new Layer[numOfLayers];
-      for(int i=0;i<numOfLayers;i++){
-         layers[i]=new Layer(inputSizes[i], outputSizes[i], activationFunction, weightInitializer);
-      }
-      network=new Network(layers);
-      }
-      public void createNetwork(){
-          Layer[] layers=new Layer[3];
-      layers[0]=new Layer(4, 4, activationFunction, weightInitializer);
-      layers[1]=new Layer(4, 4, activationFunction, weightInitializer);
-      layers[2]=new Layer(4, 4, activationFunction, weightInitializer);
-      network=new Network(layers);
-      }
-  
+      network = new Network(layers);
+   }
+
+   public void createNetwork() {
+      Layer[] layers = new Layer[3];
+      layers[0] = new Layer(4, 4, activationFunction, weightInitializer);
+      layers[1] = new Layer(4, 4, activationFunction, weightInitializer);
+      layers[2] = new Layer(4, 4, activationFunction, weightInitializer);
+      network = new Network(layers);
+   }
+
    public void train(double[][] X, double[][] Y) {
-      double epocheLossSum=0;
-      double count=0;
       ValidateXY(X, Y);
       if (X.length == 0) {
-       throw new IllegalArgumentException("Training data is empty");
-     }
+         throw new IllegalArgumentException("Training data is empty");
+      }
 
-      int xSize=X[0].length,ySize=Y[0].length;
-      loses=new ArrayList<>();
-      for (int epoche = 0; epoche < epoches; epoche++) {
-         int nSamples = X.length;
+      int nSamples = X.length;
+      int inputSize = X[0].length;
+      int outputSize = Y[0].length;
+      loses = new ArrayList<>();
+
+      for (int epoch = 0; epoch < epoches; epoch++) {
+         batchSize = 1;
+         // Shuffle dataset at the start of each epoch
+         shuffleDataset(X, Y);
+
+         double epochLossSum = 0.0;
+
+         // Process data in mini-batches
          for (int start = 0; start < nSamples; start += batchSize) {
-            int end = Math.min(nSamples, start + batchSize);
-            double[][] batchX = Arrays.copyOfRange(X, start, end);
-            double[][] batchY = Arrays.copyOfRange(Y, start, end);
-            double[][] batchPred = new double[batchX.length][];
-            for (int i = 0; i < batchX.length; i++) {
-               if(batchX[i].length!=xSize){
-                  throw new IllegalArgumentException("this input sample does not match the orignial input sample");
-               }
-               batchPred[i] = network.forward(batchX[i]);
-               epocheLossSum+=lossFunction.calculate(batchPred[i], batchY[i]);
-               count++;
+            int end = Math.min(start + batchSize, nSamples);
+            int currentBatchSize = end - start;
+
+            // Store predictions and gradients for the batch
+            double[][] batchPred = new double[currentBatchSize][outputSize];
+            double[][] batchGrad = new double[currentBatchSize][outputSize];
+
+            // 1️⃣ Forward pass for the batch
+            for (int i = 0; i < currentBatchSize; i++) {
+               batchPred[i] = network.forward(X[start + i]);
+               epochLossSum += lossFunction.calculate(batchPred[i], Y[start + i]);
             }
-            double[][] batchGrad = new double[batchX.length][];
-            for (int i = 0; i < batchX.length; i++) {
-                if(batchY[i].length!=ySize){
-                  throw new IllegalArgumentException("this output sample does not match the orignial output sample");
-               }
-               batchGrad[i] = lossFunction.gradLoss(batchPred[i], batchY[i]);
+
+            // 2️⃣ Compute gradients per sample
+            for (int i = 0; i < currentBatchSize; i++) {
+               batchGrad[i] = lossFunction.gradLoss(batchPred[i], Y[start + i]);
             }
-            double[] avgGrad = new double[batchGrad[0].length];
-            for (int i = 0; i < avgGrad.length; i++) {
-               double sum = 0;
-               for (int j = 0; j < batchGrad.length; j++) {
-                  sum += batchGrad[j][i];
+
+            // 3️⃣ Average gradients across the batch
+            double[] avgGrad = new double[outputSize];
+            for (int j = 0; j < outputSize; j++) {
+               double sum = 0.0;
+               for (int i = 0; i < currentBatchSize; i++) {
+                  sum += batchGrad[i][j];
                }
-               avgGrad[i] = sum / (end - start);
+               avgGrad[j] = sum / currentBatchSize;
             }
+
             network.backward(avgGrad, learningRate);
+
          }
-         loses.add(epocheLossSum/count);
-         epocheLossSum=0;
-         count=0;
+
+         // Record average loss for the epoch
+         loses.add(epochLossSum / nSamples);
+
       }
    }
 
@@ -129,7 +145,7 @@ public class Model {
    }
 
    public List<double[]> predict(List<double[]> inputs) {
-      if(inputs==null){
+      if (inputs == null) {
          throw new NullPointerException("inputs cannot be null");
       }
       List<double[]> outputs = new ArrayList<>();
@@ -143,7 +159,7 @@ public class Model {
       ValidateXY(X, Y);
       Random rand = new Random();
       for (int i = 0; i < X.length; i++) {
-         int j = rand.nextInt(i+1);
+         int j = rand.nextInt(i + 1);
 
          double[] tempX = X[i];
          X[i] = X[j];
@@ -156,7 +172,7 @@ public class Model {
    }
 
    public static SplitResult trainTestSplit(double[][] X, double[][] Y, double testRatio) {
-      ValidateXY(X,Y);
+      ValidateXY(X, Y);
       shuffleDataset(X, Y);
       int n = X.length;
       int testSize = (int) (n * testRatio);
@@ -189,122 +205,140 @@ public class Model {
       }
    }
 
-   public static void normalizeMinMax(double[][] X){
+   public static void normalizeMinMax(double[][] X) {
       ValidateX(X);
-      for(int i=0;i<X.length;i++){
-         normalizeMinMax(X[i]);
+      if (X.length == 0) {
+         return;
+      }
+
+      int numSamples = X.length;
+      int numFeatures = X[0].length;
+
+      for (int col = 0; col < numFeatures; col++) {
+         double[] column = new double[numSamples];
+         for (int row = 0; row < numSamples; row++) {
+            column[row] = X[row][col];
+         }
+
+         normalizeMinMax(column);
+
+         for (int row = 0; row < numSamples; row++) {
+            X[row][col] = column[row];
+         }
       }
    }
-   public static void ValidateXY(double[][] X, double[][] Y){
+
+   public static void ValidateXY(double[][] X, double[][] Y) {
 
       for (int i = 0; i < X.length; i++) {
-    if (X[i] == null || Y[i] == null) {
-        throw new NullPointerException("Sample at index " + i + " is null");
-    }
-}
+         if (X[i] == null || Y[i] == null) {
+            throw new NullPointerException("Sample at index " + i + " is null");
+         }
+      }
 
       if (X == null || Y == null) {
-    throw new NullPointerException("X and Y cannot be null");
-}
+         throw new NullPointerException("X and Y cannot be null");
+      }
 
-      if(X.length!=Y.length){
+      if (X.length != Y.length) {
          throw new IllegalArgumentException("number of input samples does not match number of output samples");
       }
    }
 
-    public static void ValidateX(double[] X){
-         if (X == null) {
-            throw new NullPointerException("this sample cannot be null");
-         }
+   public static void ValidateX(double[] X) {
+      if (X == null) {
+         throw new NullPointerException("this sample cannot be null");
+      }
 
    }
 
-   public static void ValidateX(double[][] X){
-               if (X == null) {
-            throw new NullPointerException("these samples cannot be null");
-         }
+   public static void ValidateX(double[][] X) {
+      if (X == null) {
+         throw new NullPointerException("these samples cannot be null");
+      }
    }
+
    ///////
-   /// 
-   /// 
+   ///
+   ///
    public Network getNetwork() {
-        return network;
-    }
+      return network;
+   }
 
-    public LossFunction getLossFunction() {
-        return lossFunction;
-    }
+   public LossFunction getLossFunction() {
+      return lossFunction;
+   }
 
-    public WeightInitializer getWeightInitializer() {
-        return weightInitializer;
-    }
+   public WeightInitializer getWeightInitializer() {
+      return weightInitializer;
+   }
 
-    public ActivationFunction getActivationFunction() {
-        return activationFunction;
-    }
+   public ActivationFunction getActivationFunction() {
+      return activationFunction;
+   }
 
-    public int getBatchSize() {
-        return batchSize;
-    }
+   public int getBatchSize() {
+      return batchSize;
+   }
 
-    public int getEpoches() {
-        return epoches;
-    }
+   public int getEpoches() {
+      return epoches;
+   }
 
-    public double getLearningRate() {
-        return learningRate;
-    }
+   public double getLearningRate() {
+      return learningRate;
+   }
 
-    public List<Double> getLoses() {
-        return loses;
-    }
+   public List<Double> getLoses() {
+      return loses;
+   }
 
-    public void setNetwork(Network network) {
-        if (network == null) {
-            throw new NullPointerException("Network cannot be null");
-        }
-        this.network = network;
-    }
+   public void setNetwork(Network network) {
+      if (network == null) {
+         throw new NullPointerException("Network cannot be null");
+      }
+      this.network = network;
+   }
 
-    public void setLossFunction(LossFunction lossFunction) {
-        if (lossFunction == null) {
-            throw new NullPointerException("Loss function cannot be null");
-        }
-        this.lossFunction = lossFunction;
-    }
+   public void setLossFunction(LossFunction lossFunction) {
+      if (lossFunction == null) {
+         throw new NullPointerException("Loss function cannot be null");
+      }
+      this.lossFunction = lossFunction;
+   }
 
-    public void setWeightInitializer(WeightInitializer weightInitializer) {
-        if (weightInitializer == null) {
-            throw new NullPointerException("Weight initializer cannot be null");
-        }
-        this.weightInitializer = weightInitializer;
-    }
+   public void setWeightInitializer(WeightInitializer weightInitializer) {
+      if (weightInitializer == null) {
+         throw new NullPointerException("Weight initializer cannot be null");
+      }
+      this.weightInitializer = weightInitializer;
+   }
 
-    public void setActivationFunction(ActivationFunction activationFunction) {
-        if (activationFunction == null) {
-            throw new NullPointerException("Activation function cannot be null");
-        }
-        this.activationFunction = activationFunction;
-    }
+   public void setActivationFunction(ActivationFunction activationFunction) {
+      if (activationFunction == null) {
+         throw new NullPointerException("Activation function cannot be null");
+      }
+      this.activationFunction = activationFunction;
+   }
 
-    public void setBatchSize(int batchSize) {
-        if (batchSize <= 0) {
-            throw new IllegalArgumentException("Batch size must be greater than 0");
-        }
-        this.batchSize = batchSize;
-    }
+   public void setBatchSize(int batchSize) {
+      if (batchSize <= 0) {
+         throw new IllegalArgumentException("Batch size must be greater than 0");
+      }
+      this.batchSize = batchSize;
+   }
 
-    public void setEpoches(int epoches) {
-        if (epoches <= 0) {
-            throw new IllegalArgumentException("Number of epochs must be greater than 0");
-        }
-        this.epoches = epoches;
-    }
+   public void setEpoches(int epoches) {
+      if (epoches <= 0) {
+         throw new IllegalArgumentException("Number of epochs must be greater than 0");
+      }
+      this.epoches = epoches;
+   }
 
-    public void setLearningRate(double learningRate) {
-        if (learningRate <= 0) {
-            throw new IllegalArgumentException("Learning rate must be greater than 0");
-        }
-        this.learningRate = learningRate;
-    }
+   public void setLearningRate(double learningRate) {
+      if (learningRate <= 0) {
+         throw new IllegalArgumentException("Learning rate must be greater than 0");
+      }
+      this.learningRate = learningRate;
+   }
 }

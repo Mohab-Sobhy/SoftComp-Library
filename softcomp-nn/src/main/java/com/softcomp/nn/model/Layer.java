@@ -1,5 +1,8 @@
 package com.softcomp.nn.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.softcomp.nn.activationfunction.ActivationFunction;
 import com.softcomp.nn.initializers.WeightInitializer;
 
@@ -13,12 +16,13 @@ public class Layer {
 
     private ActivationFunction activationFunction;
 
-    private double[] inputCache;
-    private double[] outputCache;
+    private List<double[]> inputCaches = new ArrayList<>();
+    private List<double[]> outputCaches = new ArrayList<>();
+    private List<double[]> outputACaches = new ArrayList<>();
 
     public Layer(int inputSize, int outputSize,
-                 ActivationFunction activationFunction,
-                 WeightInitializer initializer) {
+            ActivationFunction activationFunction,
+            WeightInitializer initializer) {
 
         if (inputSize <= 0 || outputSize <= 0) {
             throw new IllegalArgumentException("Layer sizes must be positive");
@@ -35,9 +39,9 @@ public class Layer {
     }
 
     public Layer(int inputSize, int outputSize,
-                 ActivationFunction activationFunction,
-                 WeightInitializer initializer,
-                 double[] biases) {
+            ActivationFunction activationFunction,
+            WeightInitializer initializer,
+            double[] biases) {
 
         this(inputSize, outputSize, activationFunction, initializer);
 
@@ -46,13 +50,10 @@ public class Layer {
         }
         if (biases.length != outputSize) {
             throw new IllegalArgumentException(
-                "Bias length must match output size"
-            );
+                    "Bias length must match output size");
         }
         this.biases = biases;
     }
-
-
 
     public double[] forward(double[] input) {
         if (input == null) {
@@ -60,8 +61,7 @@ public class Layer {
         }
         if (input.length != inputSize) {
             throw new IllegalArgumentException(
-                "Expected input size " + inputSize + ", got " + input.length
-            );
+                    "Expected input size " + inputSize + ", got " + input.length);
         }
 
         double[] z = new double[outputSize];
@@ -73,8 +73,9 @@ public class Layer {
             z[i] += biases[i];
         }
 
-        inputCache = input;
-        outputCache = z;
+        inputCaches.add(input);
+        outputCaches.add(z);
+        outputACaches.add(activationFunction.forward(z));
         return activationFunction.forward(z);
     }
 
@@ -84,16 +85,19 @@ public class Layer {
         }
         if (gradOutput.length != outputSize) {
             throw new IllegalArgumentException(
-                "Gradient size must match output size"
-            );
+                    "Gradient size must match output size");
         }
         if (learningRate <= 0) {
             throw new IllegalArgumentException("Learning rate must be > 0");
         }
 
-        double[] gradZ = activationFunction.backward(outputCache, gradOutput);
-        double[] gradInput = new double[inputSize];
+        // 1️⃣ Compute gradient w.r.t pre-activation z
+        double[] z = outputCaches.get(outputCaches.size() - 1); // last cached output (pre-activation)
+        double[] x = inputCaches.get(inputCaches.size() - 1); // last cached input
+        double[] gradZ = activationFunction.backward(z, gradOutput);
 
+        // 2️⃣ Compute gradient w.r.t input to propagate to previous layer
+        double[] gradInput = new double[inputSize];
         for (int i = 0; i < inputSize; i++) {
             double sum = 0.0;
             for (int j = 0; j < outputSize; j++) {
@@ -102,20 +106,25 @@ public class Layer {
             gradInput[i] = sum;
         }
 
+        // 3️⃣ Update weights and biases
         for (int i = 0; i < inputSize; i++) {
             for (int j = 0; j < outputSize; j++) {
-                weights[i][j] -= learningRate * inputCache[i] * gradZ[j];
+                weights[i][j] -= learningRate * x[i] * gradZ[j];
             }
         }
-
         for (int j = 0; j < outputSize; j++) {
             biases[j] -= learningRate * gradZ[j];
         }
 
+        // 4️⃣ Clear caches for this forward/backward pass
+        inputCaches.remove(inputCaches.size() - 1);
+        outputCaches.remove(outputCaches.size() - 1);
+        outputACaches.remove(outputACaches.size() - 1);
+
+        // 5️⃣ Return gradInput to propagate backward
         return gradInput;
     }
 
-   
     public int getInputSize() {
         return inputSize;
     }
@@ -136,14 +145,13 @@ public class Layer {
         return activationFunction;
     }
 
-    public double[] getInputCache() {
-        return inputCache;
+    public List<double[]> getInputCaches() {
+        return inputCaches;
     }
 
-    public double[] getOutputCache() {
-        return outputCache;
+    public List<double[]> getOutputCaches() {
+        return outputCaches;
     }
-
 
     public void setWeights(double[][] weights) {
         if (weights == null) {
@@ -151,8 +159,7 @@ public class Layer {
         }
         if (weights.length != inputSize || weights[0].length != outputSize) {
             throw new IllegalArgumentException(
-                "Weights shape must be [" + inputSize + "][" + outputSize + "]"
-            );
+                    "Weights shape must be [" + inputSize + "][" + outputSize + "]");
         }
         this.weights = weights;
     }
@@ -163,8 +170,7 @@ public class Layer {
         }
         if (biases.length != outputSize) {
             throw new IllegalArgumentException(
-                "Bias length must match output size"
-            );
+                    "Bias length must match output size");
         }
         this.biases = biases;
     }

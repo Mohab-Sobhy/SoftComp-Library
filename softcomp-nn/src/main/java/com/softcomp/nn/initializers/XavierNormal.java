@@ -2,15 +2,18 @@ package com.softcomp.nn.initializers;
 
 import java.util.Random;
 
-public class XavierNormal extends Random implements WeightInitializer {
+import java.util.Random;
 
+public class XavierNormal implements WeightInitializer {
+    private final Random rand = new Random();
+
+    @Override
     public double[][] initialize(int fanIn, int fanOut) {
         double std = Math.sqrt(2.0 / (fanIn + fanOut));
-        double[][] W = new double[fanOut][fanIn];
-        Random rand = new Random();
+        double[][] W = new double[fanIn][fanOut];
 
-        for (int i = 0; i < fanOut; i++) {
-            for (int j = 0; j < fanIn; j++) {
+        for (int i = 0; i < fanIn; i++) {
+            for (int j = 0; j < fanOut; j++) {
                 W[i][j] = rand.nextGaussian() * std;
             }
         }
