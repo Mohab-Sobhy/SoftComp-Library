@@ -1,6 +1,5 @@
 package com.softcomp.nn.model;
 
-
 import com.softcomp.nn.activationfunction.ActivationFunction;
 import com.softcomp.nn.initializers.WeightInitializer;
 
@@ -18,56 +17,83 @@ public class Layer {
     private double[] outputCache;
 
     public Layer(int inputSize, int outputSize,
-            ActivationFunction activationFunction,
-            WeightInitializer initializer) {
+                 ActivationFunction activationFunction,
+                 WeightInitializer initializer) {
+
+        if (inputSize <= 0 || outputSize <= 0) {
+            throw new IllegalArgumentException("Layer sizes must be positive");
+        }
+        if (activationFunction == null || initializer == null) {
+            throw new NullPointerException("Activation and initializer cannot be null");
+        }
+
         this.inputSize = inputSize;
         this.outputSize = outputSize;
         this.activationFunction = activationFunction;
-
         this.weights = initializer.initialize(inputSize, outputSize);
-
         this.biases = new double[outputSize];
     }
 
     public Layer(int inputSize, int outputSize,
-            ActivationFunction activationFunction,
-            WeightInitializer initializer, double[] biases) {
-        this.inputSize = inputSize;
-        this.outputSize = outputSize;
-        this.activationFunction = activationFunction;
+                 ActivationFunction activationFunction,
+                 WeightInitializer initializer,
+                 double[] biases) {
 
-        this.weights = initializer.initialize(inputSize, outputSize);
+        this(inputSize, outputSize, activationFunction, initializer);
 
-        if (biases.length != outputSize)
-            this.biases = new double[outputSize];
-        else
-            this.biases = biases;
+        if (biases == null) {
+            throw new NullPointerException("Biases cannot be null");
+        }
+        if (biases.length != outputSize) {
+            throw new IllegalArgumentException(
+                "Bias length must match output size"
+            );
+        }
+        this.biases = biases;
     }
 
+
+
     public double[] forward(double[] input) {
-        double[] output = new double[outputSize];
-        try {
-            if (input.length != inputSize) {
-                throw new IllegalArgumentException("Input size does not match layer input size");
-            }
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
+        if (input == null) {
+            throw new NullPointerException("Input cannot be null");
         }
+        if (input.length != inputSize) {
+            throw new IllegalArgumentException(
+                "Expected input size " + inputSize + ", got " + input.length
+            );
+        }
+
+        double[] z = new double[outputSize];
+
         for (int i = 0; i < outputSize; i++) {
             for (int j = 0; j < inputSize; j++) {
-                output[i] += weights[j][i] * input[j];
+                z[i] += weights[j][i] * input[j];
             }
-            output[i] += biases[i];
+            z[i] += biases[i];
         }
+
         inputCache = input;
-        outputCache = output;
-        return activationFunction.forward(output);
+        outputCache = z;
+        return activationFunction.forward(z);
     }
 
     public double[] backward(double[] gradOutput, double learningRate) {
-        double[] gradZ = activationFunction.backward(outputCache, gradOutput);
+        if (gradOutput == null) {
+            throw new NullPointerException("Gradient output cannot be null");
+        }
+        if (gradOutput.length != outputSize) {
+            throw new IllegalArgumentException(
+                "Gradient size must match output size"
+            );
+        }
+        if (learningRate <= 0) {
+            throw new IllegalArgumentException("Learning rate must be > 0");
+        }
 
+        double[] gradZ = activationFunction.backward(outputCache, gradOutput);
         double[] gradInput = new double[inputSize];
+
         for (int i = 0; i < inputSize; i++) {
             double sum = 0.0;
             for (int j = 0; j < outputSize; j++) {
@@ -89,6 +115,15 @@ public class Layer {
         return gradInput;
     }
 
+   
+    public int getInputSize() {
+        return inputSize;
+    }
+
+    public int getOutputSize() {
+        return outputSize;
+    }
+
     public double[][] getWeights() {
         return weights;
     }
@@ -99,5 +134,45 @@ public class Layer {
 
     public ActivationFunction getActivationFunction() {
         return activationFunction;
+    }
+
+    public double[] getInputCache() {
+        return inputCache;
+    }
+
+    public double[] getOutputCache() {
+        return outputCache;
+    }
+
+
+    public void setWeights(double[][] weights) {
+        if (weights == null) {
+            throw new NullPointerException("Weights cannot be null");
+        }
+        if (weights.length != inputSize || weights[0].length != outputSize) {
+            throw new IllegalArgumentException(
+                "Weights shape must be [" + inputSize + "][" + outputSize + "]"
+            );
+        }
+        this.weights = weights;
+    }
+
+    public void setBiases(double[] biases) {
+        if (biases == null) {
+            throw new NullPointerException("Biases cannot be null");
+        }
+        if (biases.length != outputSize) {
+            throw new IllegalArgumentException(
+                "Bias length must match output size"
+            );
+        }
+        this.biases = biases;
+    }
+
+    public void setActivationFunction(ActivationFunction activationFunction) {
+        if (activationFunction == null) {
+            throw new NullPointerException("Activation function cannot be null");
+        }
+        this.activationFunction = activationFunction;
     }
 }
