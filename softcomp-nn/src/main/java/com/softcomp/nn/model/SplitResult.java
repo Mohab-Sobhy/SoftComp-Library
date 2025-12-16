@@ -2,10 +2,10 @@ package com.softcomp.nn.model;
 
 public class SplitResult {
 
-    private final double[][] X_train;
-    private final double[][] Y_train;
-    private final double[][] X_test;
-    private final double[][] Y_test;
+    public final double[][] X_train;
+    public final double[][] Y_train;
+    public final double[][] X_test;
+    public final double[][] Y_test;
 
     public SplitResult(double[][] X_train, double[][] Y_train, double[][] X_test, double[][] Y_test) {
         this.X_train = X_train;

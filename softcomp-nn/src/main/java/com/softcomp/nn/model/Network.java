@@ -23,15 +23,24 @@ public class Network {
         return output;
     }
 
-    public double[] backward(double[] gradOutput, double learningRate) {
+    public double[] backward(double[] gradOutput) {
         double[] grad = gradOutput;
         for (int i = layers.length - 1; i >= 0; i--) {
             if (layers[i] == null) {
                 throw new NullPointerException("this layer is null no layer can be null");
             }
-            grad = layers[i].backward(grad, learningRate);
+            grad = layers[i].backward(grad);
         }
         return grad;
+    }
+
+    public void updateWeights(double learningRate,int batchSize){
+         for (int i = layers.length - 1; i >= 0; i--) {
+            if (layers[i] == null) {
+                throw new NullPointerException("this layer is null no layer can be null");
+            }
+           layers[i].updateWeights(learningRate, batchSize);
+        }
     }
 
     public Layer[] getLayers() {

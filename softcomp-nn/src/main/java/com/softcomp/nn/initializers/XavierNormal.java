@@ -2,7 +2,6 @@ package com.softcomp.nn.initializers;
 
 import java.util.Random;
 
-import java.util.Random;
 
 public class XavierNormal implements WeightInitializer {
     private final Random rand = new Random();

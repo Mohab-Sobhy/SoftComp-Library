@@ -93,47 +93,29 @@ public class Model {
       loses = new ArrayList<>();
 
       for (int epoch = 0; epoch < epoches; epoch++) {
-         batchSize = 1;
-         // Shuffle dataset at the start of each epoch
          shuffleDataset(X, Y);
 
          double epochLossSum = 0.0;
 
-         // Process data in mini-batches
          for (int start = 0; start < nSamples; start += batchSize) {
             int end = Math.min(start + batchSize, nSamples);
             int currentBatchSize = end - start;
 
-            // Store predictions and gradients for the batch
             double[][] batchPred = new double[currentBatchSize][outputSize];
             double[][] batchGrad = new double[currentBatchSize][outputSize];
 
-            // 1️⃣ Forward pass for the batch
             for (int i = 0; i < currentBatchSize; i++) {
+               if(X[start+i].length!=inputSize||Y[start+i].length!=outputSize){
+                  throw new NullPointerException("the input size or output size does not match the original size");
+               }
                batchPred[i] = network.forward(X[start + i]);
                epochLossSum += lossFunction.calculate(batchPred[i], Y[start + i]);
-            }
-
-            // 2️⃣ Compute gradients per sample
-            for (int i = 0; i < currentBatchSize; i++) {
                batchGrad[i] = lossFunction.gradLoss(batchPred[i], Y[start + i]);
+               network.backward(batchGrad[i]);
             }
 
-            // 3️⃣ Average gradients across the batch
-            double[] avgGrad = new double[outputSize];
-            for (int j = 0; j < outputSize; j++) {
-               double sum = 0.0;
-               for (int i = 0; i < currentBatchSize; i++) {
-                  sum += batchGrad[i][j];
-               }
-               avgGrad[j] = sum / currentBatchSize;
-            }
-
-            network.backward(avgGrad, learningRate);
-
+            network.updateWeights(learningRate,currentBatchSize);
          }
-
-         // Record average loss for the epoch
          loses.add(epochLossSum / nSamples);
 
       }
@@ -144,17 +126,17 @@ public class Model {
       return network.forward(input);
    }
 
-   public List<double[]> predict(List<double[]> inputs) {
+   public double[][] predict(double[][] inputs) {
       if (inputs == null) {
          throw new NullPointerException("inputs cannot be null");
       }
-      List<double[]> outputs = new ArrayList<>();
-      for (int i = 0; i < inputs.size(); i++) {
-         outputs.add(network.forward(inputs.get(i)));
+      double[][] outputs = new double[inputs.length][];
+      for (int i = 0; i < inputs.length; i++) {
+         outputs[i]=network.forward(inputs[i]);
       }
       return outputs;
    }
-
+  
    public static void shuffleDataset(double[][] X, double[][] Y) {
       ValidateXY(X, Y);
       Random rand = new Random();

@@ -1,7 +1,6 @@
 package com.softcomp.nn.model;
 
-import java.util.ArrayList;
-import java.util.List;
+
 
 import com.softcomp.nn.activationfunction.ActivationFunction;
 import com.softcomp.nn.initializers.WeightInitializer;
@@ -16,9 +15,11 @@ public class Layer {
 
     private ActivationFunction activationFunction;
 
-    private List<double[]> inputCaches = new ArrayList<>();
-    private List<double[]> outputCaches = new ArrayList<>();
-    private List<double[]> outputACaches = new ArrayList<>();
+    private double[] inputCache ;
+    private double[] outputCache ;
+    private double[] outputACache ;
+    private double[][] dW;
+    private double[] db;
 
     public Layer(int inputSize, int outputSize,
             ActivationFunction activationFunction,
@@ -36,6 +37,8 @@ public class Layer {
         this.activationFunction = activationFunction;
         this.weights = initializer.initialize(inputSize, outputSize);
         this.biases = new double[outputSize];
+        this.dW = new double[inputSize][outputSize];
+        this.db = new double[outputSize];
     }
 
     public Layer(int inputSize, int outputSize,
@@ -73,13 +76,13 @@ public class Layer {
             z[i] += biases[i];
         }
 
-        inputCaches.add(input);
-        outputCaches.add(z);
-        outputACaches.add(activationFunction.forward(z));
-        return activationFunction.forward(z);
+        inputCache=input;
+        outputCache=z;
+        outputACache=activationFunction.forward(z);
+        return outputACache;
     }
 
-    public double[] backward(double[] gradOutput, double learningRate) {
+    public double[] backward(double[] gradOutput) {
         if (gradOutput == null) {
             throw new NullPointerException("Gradient output cannot be null");
         }
@@ -87,16 +90,11 @@ public class Layer {
             throw new IllegalArgumentException(
                     "Gradient size must match output size");
         }
-        if (learningRate <= 0) {
-            throw new IllegalArgumentException("Learning rate must be > 0");
-        }
 
-        // 1️⃣ Compute gradient w.r.t pre-activation z
-        double[] z = outputCaches.get(outputCaches.size() - 1); // last cached output (pre-activation)
-        double[] x = inputCaches.get(inputCaches.size() - 1); // last cached input
+        double[] z = outputCache;
+        double[] x = inputCache; 
         double[] gradZ = activationFunction.backward(z, gradOutput);
 
-        // 2️⃣ Compute gradient w.r.t input to propagate to previous layer
         double[] gradInput = new double[inputSize];
         for (int i = 0; i < inputSize; i++) {
             double sum = 0.0;
@@ -106,24 +104,47 @@ public class Layer {
             gradInput[i] = sum;
         }
 
-        // 3️⃣ Update weights and biases
-        for (int i = 0; i < inputSize; i++) {
-            for (int j = 0; j < outputSize; j++) {
-                weights[i][j] -= learningRate * x[i] * gradZ[j];
+                    for (int i = 0; i < inputSize; i++) {
+                for (int j = 0; j < outputSize; j++) {
+                    dW[i][j] += x[i] * gradZ[j];
+                }
             }
-        }
-        for (int j = 0; j < outputSize; j++) {
-            biases[j] -= learningRate * gradZ[j];
-        }
 
-        // 4️⃣ Clear caches for this forward/backward pass
-        inputCaches.remove(inputCaches.size() - 1);
-        outputCaches.remove(outputCaches.size() - 1);
-        outputACaches.remove(outputACaches.size() - 1);
+            for (int j = 0; j < outputSize; j++) {
+                db[j] += gradZ[j];
+            }
 
-        // 5️⃣ Return gradInput to propagate backward
+
+        
         return gradInput;
     }
+
+    public void updateWeights(double learningRate, int batchSize) {
+    if (learningRate <= 0) {
+            throw new IllegalArgumentException("Learning rate must be > 0");
+        }
+    for (int i = 0; i < inputSize; i++) {
+        for (int j = 0; j < outputSize; j++) {
+            weights[i][j] -= learningRate * (dW[i][j] / batchSize);
+        }
+    }
+
+    for (int j = 0; j < outputSize; j++) {
+        biases[j] -= learningRate * (db[j] / batchSize);
+    }
+    zeroGradients();
+}
+   public void zeroGradients() {
+    for (int i = 0; i < inputSize; i++) {
+        for (int j = 0; j < outputSize; j++) {
+            dW[i][j] = 0.0;
+        }
+    }
+    for (int j = 0; j < outputSize; j++) {
+        db[j] = 0.0;
+    }
+}
+
 
     public int getInputSize() {
         return inputSize;
@@ -145,12 +166,12 @@ public class Layer {
         return activationFunction;
     }
 
-    public List<double[]> getInputCaches() {
-        return inputCaches;
+    public double[] getInputCache() {
+        return inputCache;
     }
 
-    public List<double[]> getOutputCaches() {
-        return outputCaches;
+    public double[] getOutputCache() {
+        return outputCache;
     }
 
     public void setWeights(double[][] weights) {

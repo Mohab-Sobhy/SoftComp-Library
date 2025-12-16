@@ -1,34 +1,29 @@
 package com.softcomp.nn.lossfunctions;
 
-public class BinaryCrossEntropy implements LossFunction {
+public class CrossEntropy implements LossFunction {
 
-    private static final double EPSILON = 1e-15; 
+    private static final double EPSILON = 1e-15;
 
     @Override
     public double calculate(double[] pred, double[] actual) {
         validate(pred, actual);
-        double sum = 0.0;
-        int n = pred.length;
+        double loss = 0.0;
 
-        for (int i = 0; i < n; i++) {
-            double p = Math.min(Math.max(pred[i], EPSILON), 1 - EPSILON); 
-            sum += -(actual[i] * Math.log(p) + (1 - actual[i]) * Math.log(1 - p));
+        for (int i = 0; i < pred.length; i++) {
+            double p = Math.max(pred[i], EPSILON);
+            loss += actual[i] * Math.log(p);
         }
-
-        return sum / n;
+        return -loss;
     }
 
     @Override
     public double[] gradLoss(double[] pred, double[] actual) {
         validate(pred, actual);
-        int n = pred.length;
-        double[] grad = new double[n];
+        double[] grad = new double[pred.length];
 
-        for (int i = 0; i < n; i++) {
-            double p = Math.min(Math.max(pred[i], EPSILON), 1 - EPSILON); 
-            grad[i] = (p - actual[i]) / n; 
+        for (int i = 0; i < pred.length; i++) {
+            grad[i] = pred[i] - actual[i];
         }
-
         return grad;
     }
 
@@ -41,3 +36,4 @@ public class BinaryCrossEntropy implements LossFunction {
         }
     }
 }
+
