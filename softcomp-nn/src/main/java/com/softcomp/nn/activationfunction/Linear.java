@@ -1,6 +1,8 @@
 package com.softcomp.nn.activationfunction;
 
-public class Linear extends ActivationFunction {
+import java.io.Serializable;
+
+public class Linear extends ActivationFunction implements Serializable {
     public double applyFunction(double x) {
         return x;
     }

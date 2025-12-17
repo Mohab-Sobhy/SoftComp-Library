@@ -1,11 +1,11 @@
 package com.softcomp.nn.model;
 
-
+import java.io.Serializable;
 
 import com.softcomp.nn.activationfunction.ActivationFunction;
 import com.softcomp.nn.initializers.WeightInitializer;
 
-public class Layer {
+public class Layer implements Serializable {
 
     private int inputSize;
     private int outputSize;
@@ -15,9 +15,9 @@ public class Layer {
 
     private ActivationFunction activationFunction;
 
-    private double[] inputCache ;
-    private double[] outputCache ;
-    private double[] outputACache ;
+    private double[] inputCache;
+    private double[] outputCache;
+    private double[] outputACache;
     private double[][] dW;
     private double[] db;
 
@@ -76,9 +76,9 @@ public class Layer {
             z[i] += biases[i];
         }
 
-        inputCache=input;
-        outputCache=z;
-        outputACache=activationFunction.forward(z);
+        inputCache = input;
+        outputCache = z;
+        outputACache = activationFunction.forward(z);
         return outputACache;
     }
 
@@ -92,7 +92,7 @@ public class Layer {
         }
 
         double[] z = outputCache;
-        double[] x = inputCache; 
+        double[] x = inputCache;
         double[] gradZ = activationFunction.backward(z, gradOutput);
 
         double[] gradInput = new double[inputSize];
@@ -104,47 +104,45 @@ public class Layer {
             gradInput[i] = sum;
         }
 
-                    for (int i = 0; i < inputSize; i++) {
-                for (int j = 0; j < outputSize; j++) {
-                    dW[i][j] += x[i] * gradZ[j];
-                }
-            }
-
+        for (int i = 0; i < inputSize; i++) {
             for (int j = 0; j < outputSize; j++) {
-                db[j] += gradZ[j];
+                dW[i][j] += x[i] * gradZ[j];
             }
+        }
 
+        for (int j = 0; j < outputSize; j++) {
+            db[j] += gradZ[j];
+        }
 
-        
         return gradInput;
     }
 
     public void updateWeights(double learningRate, int batchSize) {
-    if (learningRate <= 0) {
+        if (learningRate <= 0) {
             throw new IllegalArgumentException("Learning rate must be > 0");
         }
-    for (int i = 0; i < inputSize; i++) {
-        for (int j = 0; j < outputSize; j++) {
-            weights[i][j] -= learningRate * (dW[i][j] / batchSize);
+        for (int i = 0; i < inputSize; i++) {
+            for (int j = 0; j < outputSize; j++) {
+                weights[i][j] -= learningRate * (dW[i][j] / batchSize);
+            }
         }
+
+        for (int j = 0; j < outputSize; j++) {
+            biases[j] -= learningRate * (db[j] / batchSize);
+        }
+        zeroGradients();
     }
 
-    for (int j = 0; j < outputSize; j++) {
-        biases[j] -= learningRate * (db[j] / batchSize);
-    }
-    zeroGradients();
-}
-   public void zeroGradients() {
-    for (int i = 0; i < inputSize; i++) {
+    public void zeroGradients() {
+        for (int i = 0; i < inputSize; i++) {
+            for (int j = 0; j < outputSize; j++) {
+                dW[i][j] = 0.0;
+            }
+        }
         for (int j = 0; j < outputSize; j++) {
-            dW[i][j] = 0.0;
+            db[j] = 0.0;
         }
     }
-    for (int j = 0; j < outputSize; j++) {
-        db[j] = 0.0;
-    }
-}
-
 
     public int getInputSize() {
         return inputSize;

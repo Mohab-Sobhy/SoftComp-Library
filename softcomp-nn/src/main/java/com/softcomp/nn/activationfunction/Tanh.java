@@ -1,6 +1,8 @@
 package com.softcomp.nn.activationfunction;
 
-public class Tanh extends ActivationFunction {
+import java.io.Serializable;
+
+public class Tanh extends ActivationFunction implements Serializable {
     public double eulerNumber = Math.E;
 
     // 2×sigmoid(2x)−1

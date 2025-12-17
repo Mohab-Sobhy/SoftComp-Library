@@ -1,6 +1,8 @@
 package com.softcomp.nn.activationfunction;
 
-public class ReLU extends ActivationFunction {
+import java.io.Serializable;
+
+public class ReLU extends ActivationFunction implements Serializable {
     public double eulerNumber = Math.E;
 
     public double applyFunction(double x) {

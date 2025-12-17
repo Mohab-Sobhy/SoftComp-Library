@@ -1,6 +1,8 @@
 package com.softcomp.nn.activationfunction;
 
-public class Sigmoid extends ActivationFunction {
+import java.io.Serializable;
+
+public class Sigmoid extends ActivationFunction implements Serializable {
 
     @Override
     public double applyFunction(double x) {

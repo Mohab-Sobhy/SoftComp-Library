@@ -1,8 +1,10 @@
 package com.softcomp.nn.lossfunctions;
 
-public class BinaryCrossEntropy implements LossFunction {
+import java.io.Serializable;
 
-    private static final double EPSILON = 1e-15; 
+public class BinaryCrossEntropy implements LossFunction, Serializable {
+
+    private static final double EPSILON = 1e-15;
 
     @Override
     public double calculate(double[] pred, double[] actual) {
@@ -11,7 +13,7 @@ public class BinaryCrossEntropy implements LossFunction {
         int n = pred.length;
 
         for (int i = 0; i < n; i++) {
-            double p = Math.min(Math.max(pred[i], EPSILON), 1 - EPSILON); 
+            double p = Math.min(Math.max(pred[i], EPSILON), 1 - EPSILON);
             sum += -(actual[i] * Math.log(p) + (1 - actual[i]) * Math.log(1 - p));
         }
 
@@ -25,8 +27,8 @@ public class BinaryCrossEntropy implements LossFunction {
         double[] grad = new double[n];
 
         for (int i = 0; i < n; i++) {
-            double p = Math.min(Math.max(pred[i], EPSILON), 1 - EPSILON); 
-            grad[i] = (p - actual[i]) / n; 
+            double p = Math.min(Math.max(pred[i], EPSILON), 1 - EPSILON);
+            grad[i] = (p - actual[i]) / (n * p * (1 - p));
         }
 
         return grad;

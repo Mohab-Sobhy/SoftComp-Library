@@ -1,6 +1,8 @@
 package com.softcomp.nn.lossfunctions;
 
-public class MeanSquaredError implements LossFunction {
+import java.io.Serializable;
+
+public class MeanSquaredError implements LossFunction, Serializable {
 
     @Override
     public double calculate(double[] pred, double[] actual) {

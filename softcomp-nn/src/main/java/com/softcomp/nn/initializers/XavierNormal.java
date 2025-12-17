@@ -1,9 +1,9 @@
 package com.softcomp.nn.initializers;
 
+import java.io.Serializable;
 import java.util.Random;
 
-
-public class XavierNormal implements WeightInitializer {
+public class XavierNormal implements WeightInitializer, Serializable {
     private final Random rand = new Random();
 
     @Override

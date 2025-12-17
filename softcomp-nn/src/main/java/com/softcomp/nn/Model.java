@@ -1,5 +1,11 @@
 package com.softcomp.nn;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -16,7 +22,7 @@ import com.softcomp.nn.model.Layer;
 import com.softcomp.nn.model.Network;
 import com.softcomp.nn.model.SplitResult;
 
-public class Model {
+public class Model implements Serializable {
    private Network network;
    private LossFunction lossFunction = new MeanSquaredError();
    private WeightInitializer weightInitializer = new XavierNormal();
@@ -105,7 +111,7 @@ public class Model {
             double[][] batchGrad = new double[currentBatchSize][outputSize];
 
             for (int i = 0; i < currentBatchSize; i++) {
-               if(X[start+i].length!=inputSize||Y[start+i].length!=outputSize){
+               if (X[start + i].length != inputSize || Y[start + i].length != outputSize) {
                   throw new NullPointerException("the input size or output size does not match the original size");
                }
                batchPred[i] = network.forward(X[start + i]);
@@ -114,7 +120,7 @@ public class Model {
                network.backward(batchGrad[i]);
             }
 
-            network.updateWeights(learningRate,currentBatchSize);
+            network.updateWeights(learningRate, currentBatchSize);
          }
          loses.add(epochLossSum / nSamples);
 
@@ -132,11 +138,11 @@ public class Model {
       }
       double[][] outputs = new double[inputs.length][];
       for (int i = 0; i < inputs.length; i++) {
-         outputs[i]=network.forward(inputs[i]);
+         outputs[i] = network.forward(inputs[i]);
       }
       return outputs;
    }
-  
+
    public static void shuffleDataset(double[][] X, double[][] Y) {
       ValidateXY(X, Y);
       Random rand = new Random();
@@ -323,4 +329,25 @@ public class Model {
       }
       this.learningRate = learningRate;
    }
+
+   public void saveModel(String path) {
+      try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(path))) {
+
+         oos.writeObject(this);
+
+      } catch (IOException e) {
+         throw new RuntimeException("Failed to save model", e);
+      }
+   }
+
+   public static Model loadModel(String path) {
+      try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(path))) {
+
+         return (Model) ois.readObject();
+
+      } catch (IOException | ClassNotFoundException e) {
+         throw new RuntimeException("Failed to load model", e);
+      }
+   }
+
 }

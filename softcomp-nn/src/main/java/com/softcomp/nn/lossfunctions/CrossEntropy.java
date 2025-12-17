@@ -1,6 +1,8 @@
 package com.softcomp.nn.lossfunctions;
 
-public class CrossEntropy implements LossFunction {
+import java.io.Serializable;
+
+public class CrossEntropy implements LossFunction, Serializable {
 
     private static final double EPSILON = 1e-15;
 
@@ -10,7 +12,7 @@ public class CrossEntropy implements LossFunction {
         double loss = 0.0;
 
         for (int i = 0; i < pred.length; i++) {
-            double p = Math.max(pred[i], EPSILON);
+            double p = Math.min(Math.max(pred[i], EPSILON), 1.0 - EPSILON);
             loss += actual[i] * Math.log(p);
         }
         return -loss;
@@ -22,7 +24,9 @@ public class CrossEntropy implements LossFunction {
         double[] grad = new double[pred.length];
 
         for (int i = 0; i < pred.length; i++) {
-            grad[i] = pred[i] - actual[i];
+            double p = Math.min(Math.max(pred[i], EPSILON), 1.0 - EPSILON);
+
+            grad[i] = -actual[i] / p;
         }
         return grad;
     }
@@ -36,4 +40,3 @@ public class CrossEntropy implements LossFunction {
         }
     }
 }
-
