@@ -9,11 +9,12 @@ import java.util.List;
 
 public class CSVHelper {
 
-    public static double[][] selectColumns(String filePath, int[] columns) throws Exception {
+    public static double[][] selectColumns(String filePath, int[] columns, int skip) throws Exception {
         List<double[]> dataList = new ArrayList<>();
-
         try (CSVReader reader = new CSVReader(new FileReader(filePath))) {
             String[] line;
+            for (int i = 0; i < skip; i++)
+                reader.readNext();
             while ((line = reader.readNext()) != null) {
                 double[] row = new double[columns.length];
                 for (int i = 0; i < columns.length; i++) {

@@ -6,8 +6,8 @@ public class HearDiseaseModel {
     public static void main(String[] args) throws Exception {
         String[] labels = CSVHelper.getAllColumnNames("Heart_disease_cleveland_new.csv");
         double[][] X_test = CSVHelper.selectColumns("X_test.csv",
-                new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 });
-        double[][] Y_test = CSVHelper.selectColumns("Y_test.csv", new int[] { 0 });
+                new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 }, 0);
+        double[][] Y_test = CSVHelper.selectColumns("Y_test.csv", new int[] { 0 }, 0);
         Model model = Model.loadModel("model.nn");
         double[][] predResults = model.predict(X_test);
         LossPlot.plotLoss(model.getLoses());
